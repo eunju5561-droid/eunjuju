@@ -1,3 +1,7 @@
+# 환경변수 (민감 정보)
+.env.local
+.env*.local
+
 # macOS
 .DS_Store
 .AppleDouble
