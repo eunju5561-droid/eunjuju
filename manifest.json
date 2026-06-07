@@ -1,0 +1,47 @@
+{
+  "name": "김비서",
+  "short_name": "김비서",
+  "description": "AI 기반 업무 관리 대시보드 — 할 일·일정·프로젝트·매출을 한눈에",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#e8edff",
+  "theme_color": "#4361ee",
+  "categories": ["productivity", "business"],
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "대시보드",
+      "short_name": "대시보드",
+      "url": "/dashboard.html",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "매출 현황",
+      "short_name": "매출",
+      "url": "/chart.html",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "회의록",
+      "short_name": "회의록",
+      "url": "/meeting-result.html",
+      "icons": [{ "src": "icon.svg", "sizes": "any" }]
+    }
+  ]
+}
