@@ -12,6 +12,8 @@
   <link rel="apple-touch-icon" href="icon.svg"/>
   <title>회의록 · 마케팅팀 주간회의</title>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <style>
     /* ────────── CSS 변수 ────────── */
     :root {
@@ -435,117 +437,64 @@
       <div class="doc-header">
         <div class="doc-header-left">
           <div class="doc-type">📄 회의록</div>
-          <div class="doc-title">마케팅팀 주간회의</div>
-          <div class="doc-sub">작성일 기준 최신 회의 요약</div>
+          <div class="doc-title" id="meeting-title">⏳ 불러오는 중...</div>
+          <div class="doc-sub">최신 회의 요약</div>
         </div>
       </div>
 
       <div class="meta-grid">
         <div class="meta-item">
           <div class="meta-label">📅 회의 일시</div>
-          <div class="meta-value">2026년 3월 10일 (월) · 오전 10:00</div>
+          <div class="meta-value" id="meeting-date">–</div>
         </div>
         <div class="meta-item">
           <div class="meta-label">🔁 다음 회의</div>
-          <div class="meta-value">2026년 3월 17일 (월) · 오전 10:00</div>
+          <div class="meta-value" id="meeting-next">–</div>
         </div>
         <div class="meta-item" style="grid-column:span 2;">
           <div class="meta-label">👥 참석자</div>
-          <div class="attendees">
-            <span class="badge-person">김대리</span>
-            <span class="badge-person">이과장</span>
-            <span class="badge-person">박사원</span>
-            <span class="badge-person">정팀장</span>
+          <div class="attendees" id="meeting-attendees">
+            <span class="badge-person" style="opacity:.4">–</span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ② 논의 내용 요약 -->
+    <!-- ② 지난주 진행사항 -->
     <div class="card">
-      <div class="section-title">💬 논의 내용 요약</div>
-      <ul class="summary-list">
-        <li class="summary-item">
-          <span class="summary-num">01</span>
-          <span class="summary-text">SNS 광고 A/B 테스트 결과, <strong>B안(영상형)</strong>이 A안(이미지형) 대비 클릭률 <strong>2.3배</strong> 높아 B안 기반으로 방향을 확정했다.</span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-num">02</span>
-          <span class="summary-text">블로그 콘텐츠 3건 발행을 완료했으며, 인플루언서 협업 제안서 발송 3곳 중 <strong>푸드스타일리 김OO</strong> 1곳에서 회신이 도착해 미팅 일정을 조율 중이다.</span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-num">03</span>
-          <span class="summary-text">4월 신제품 런칭을 앞두고 사전 티저 콘텐츠를 <strong>3월 넷째 주</strong>부터 시작하기로 결정했다.</span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-num">04</span>
-          <span class="summary-text">B안 영상 광고 추가 제작으로 인해 <strong>영상 제작비 200만원</strong> 예산 증액 요청을 진행할 예정이다.</span>
-        </li>
-        <li class="summary-item">
-          <span class="summary-num">05</span>
-          <span class="summary-text">다음 주간 회의(3/17)에서 <strong>3월 프로모션 기획안</strong> 초안을 팀 전체가 함께 검토할 예정이다.</span>
-        </li>
+      <div class="section-title">📋 지난주 진행사항</div>
+      <ul class="summary-list" id="last-week-list">
+        <li class="summary-item"><span class="summary-num">–</span><span class="summary-text" style="color:var(--text-muted)">⏳ 불러오는 중...</span></li>
       </ul>
     </div>
 
-    <!-- ③ 액션 아이템 -->
+    <!-- ③ 액션 아이템 (이번주 할 일) -->
     <div class="card">
-      <div class="section-title">✅ 액션 아이템</div>
+      <div class="section-title">✅ 이번주 할 일</div>
       <table class="action-table">
-        <thead>
-          <tr>
-            <th>담당자</th>
-            <th>할 일</th>
-            <th>기한</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="person-chip">김대리</span></td>
-            <td class="action-task">3월 프로모션 기획안 초안 작성</td>
-            <td><span class="due-chip">3월 12일 (수)</span></td>
-          </tr>
-          <tr>
-            <td><span class="person-chip">이과장</span></td>
-            <td class="action-task">인플루언서 미팅 일정 확정 (푸드스타일리 김OO)</td>
-            <td><span class="due-chip">3월 14일 (금)</span></td>
-          </tr>
-          <tr>
-            <td><span class="person-chip">박사원</span></td>
-            <td class="action-task">B안 기반 영상 광고 3개 추가 제작</td>
-            <td><span class="due-chip">3월 14일 (금)</span></td>
-          </tr>
-          <tr>
-            <td><span class="person-chip">박사원</span></td>
-            <td class="action-task">경쟁사 C사 신규 캠페인 분석 리포트 작성</td>
-            <td><span class="due-chip">3월 16일 (일)</span></td>
-          </tr>
-          <tr>
-            <td><span class="person-chip">정팀장</span></td>
-            <td class="action-task">영상 제작비 추가 200만원 예산 증액 요청</td>
-            <td><span class="due-chip">차주 회의 전</span></td>
-          </tr>
-          <tr>
-            <td><span class="person-chip">정팀장</span></td>
-            <td class="action-task">4월 신제품 티저 콘텐츠 기획 착수 (3월 넷째 주 시작 목표)</td>
-            <td><span class="due-chip">3월 21일 (토)</span></td>
-          </tr>
+        <thead><tr><th>할 일</th><th>담당자</th></tr></thead>
+        <tbody id="action-tbody">
+          <tr><td colspan="2" style="color:var(--text-muted);text-align:center;padding:20px">⏳ 불러오는 중...</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- ④ 다음 회의 -->
+    <!-- ④ 논의 사항 -->
+    <div class="card">
+      <div class="section-title">💬 논의 사항</div>
+      <ul class="summary-list" id="discussion-list">
+        <li class="summary-item"><span class="summary-num">–</span><span class="summary-text" style="color:var(--text-muted)">⏳ 불러오는 중...</span></li>
+      </ul>
+    </div>
+
+    <!-- ⑤ 다음 회의 -->
     <div class="card">
       <div class="section-title">📌 다음 회의</div>
       <div class="next-meeting">
         <div class="next-icon">🗓️</div>
         <div>
           <div class="next-label">일정</div>
-          <div class="next-value">2026년 3월 17일 (월) · 오전 10:00</div>
-        </div>
-        <div style="margin-left:32px;">
-          <div class="next-label">주요 안건</div>
-          <div class="next-value" style="font-size:13px;font-weight:600;">3월 프로모션 기획안 검토</div>
+          <div class="next-value" id="next-meeting-val">–</div>
         </div>
       </div>
     </div>
@@ -553,23 +502,87 @@
   </div><!-- /doc -->
 
   <script>
+    /* ── 테마 토글 ── */
     const html = document.documentElement;
     const btn  = document.getElementById('themeToggle');
-    function applyTheme(dark) {
-      html.classList.toggle('dark', dark);
-      btn.textContent = dark ? '☀️' : '🌙';
-    }
+    function applyTheme(dark) { html.classList.toggle('dark', dark); btn.textContent = dark ? '☀️' : '🌙'; }
     applyTheme(localStorage.getItem('theme') === 'dark');
     btn.addEventListener('click', () => {
       const isDark = html.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
       btn.textContent = isDark ? '☀️' : '🌙';
     });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    /* ── 서비스 워커 ── */
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    /* ── Supabase 회의록 fetch ── */
+    const DAYS_KO = ['일','월','화','수','목','금','토'];
+    function fmtDate(str) {
+      if (!str) return '–';
+      const d = new Date(str);
+      const [y, m, day] = [d.getFullYear(), d.getMonth()+1, d.getDate()];
+      const dow = DAYS_KO[d.getDay()];
+      const time = str.includes(' ') ? ` · 오전 ${str.split(' ')[1]}` : '';
+      return `${y}년 ${m}월 ${day}일 (${dow})${time}`;
     }
+
+    (async () => {
+      if (typeof SUPABASE_URL === 'undefined' || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+        document.getElementById('meeting-title').textContent = '⚙️ config.js에 Supabase 정보를 입력해주세요';
+        return;
+      }
+      try {
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { data } = await sb.from('meetings').select('*').order('meeting_date', { ascending: false }).limit(1);
+        if (!data || !data.length) return;
+        const m = data[0];
+
+        /* 기본 정보 */
+        document.getElementById('meeting-title').textContent = m.title || '–';
+        document.getElementById('meeting-date').textContent = fmtDate(m.meeting_date);
+        document.getElementById('meeting-next').textContent = fmtDate(m.next_meeting);
+        document.getElementById('next-meeting-val').textContent = fmtDate(m.next_meeting);
+
+        /* 참석자 */
+        const attendees = (m.attendees || '').split(',').map(s => s.trim()).filter(Boolean);
+        document.getElementById('meeting-attendees').innerHTML =
+          attendees.map(a => `<span class="badge-person">${a}</span>`).join('');
+
+        /* 지난주 진행사항 */
+        const lastItems = (m.last_week_items || '').split('|').filter(Boolean);
+        document.getElementById('last-week-list').innerHTML = lastItems.map((item, i) =>
+          `<li class="summary-item">
+            <span class="summary-num">${String(i+1).padStart(2,'0')}</span>
+            <span class="summary-text">${item.trim()}</span>
+          </li>`
+        ).join('');
+
+        /* 이번주 할 일 (담당자 괄호 파싱) */
+        const thisItems = (m.this_week_items || '').split('|').filter(Boolean);
+        document.getElementById('action-tbody').innerHTML = thisItems.map(item => {
+          const match = item.match(/^(.*?)\s*\(([^,)]+)(?:,[^)]+)?\)\s*$/);
+          const task   = match ? match[1].trim() : item.trim();
+          const person = match ? match[2].trim() : '–';
+          return `<tr>
+            <td class="action-task">${task}</td>
+            <td><span class="person-chip">${person}</span></td>
+          </tr>`;
+        }).join('');
+
+        /* 논의 사항 */
+        const discItems = (m.discussions || '').split('|').filter(Boolean);
+        document.getElementById('discussion-list').innerHTML = discItems.map((item, i) =>
+          `<li class="summary-item">
+            <span class="summary-num">${String(i+1).padStart(2,'0')}</span>
+            <span class="summary-text">${item.trim()}</span>
+          </li>`
+        ).join('');
+      } catch(e) {
+        console.error('Supabase fetch 오류:', e);
+      }
+    })();
   </script>
 </body>
 </html>

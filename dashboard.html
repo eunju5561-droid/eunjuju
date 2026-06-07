@@ -12,6 +12,8 @@
   <link rel="apple-touch-icon" href="icon.svg"/>
   <title>김비서 대시보드</title>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <style>
     /* ────────────────── CSS 변수 · 라이트 ────────────────── */
     :root {
@@ -578,51 +580,8 @@
     <!-- ① 할 일 목록 -->
     <div class="card">
       <div class="card-title">📋 할 일 목록</div>
-      <ul class="todo-list">
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">파트너사 계약서 검토</span>
-          <span class="priority high">높음</span><span class="due">3/11</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">3월 프로모션 기획안 작성</span>
-          <span class="priority high">높음</span><span class="due">3/12</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">인플루언서 미팅 일정 잡기</span>
-          <span class="priority high">높음</span><span class="due">3/14</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">고객 설문조사 결과 분석</span>
-          <span class="priority medium">보통</span><span class="due">3/13</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">영상 광고 3개 추가 제작</span>
-          <span class="priority medium">보통</span><span class="due">3/14</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">경쟁사 C사 캠페인 분석</span>
-          <span class="priority medium">보통</span><span class="due">3/16</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">블로그 포스트 2건 작성</span>
-          <span class="priority low">낮음</span><span class="due">3/18</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">4월 신제품 티저 콘텐츠 기획</span>
-          <span class="priority high">높음</span><span class="due">3/21</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">월간 마케팅 보고서 작성</span>
-          <span class="priority high">높음</span><span class="due">3/31</span>
-        </li>
-        <li class="todo-item">
-          <input type="checkbox" /><span class="todo-text">워크숍 후기 작성하기</span>
-          <span class="priority high">높음</span><span class="due">6/12</span>
-        </li>
-        <li class="todo-item done">
-          <input type="checkbox" checked /><span class="todo-text">SNS 계정 주간 콘텐츠 업로드</span>
-          <span class="priority medium">보통</span><span class="due">3/10 ✓</span>
-        </li>
+      <ul class="todo-list" id="todo-list">
+        <li class="todo-item"><span class="todo-text" style="color:var(--text-muted)">⏳ 불러오는 중...</span></li>
       </ul>
     </div>
 
@@ -633,47 +592,8 @@
         <thead>
           <tr><th>요일</th><th>일정</th></tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="day-label">월 6/8</td>
-            <td><div class="events">
-              <div><span class="event-time">10:00</span>마케팅팀 주간회의</div>
-              <div><span class="event-time">14:00</span>신제품 런칭 킥오프 미팅</div>
-            </div></td>
-          </tr>
-          <tr>
-            <td class="day-label">화 6/9</td>
-            <td><div class="events">
-              <div><span class="event-time">09:00</span>3월 프로모션 기획안 마감</div>
-              <div><span class="event-time">11:00</span>디자인팀 협업 미팅</div>
-              <div><span class="event-time">15:00</span>파트너사 계약서 검토</div>
-              <div><span class="event-time">19:00</span>클로드 코드 워크숍 참석</div>
-            </div></td>
-          </tr>
-          <tr>
-            <td class="day-label">수 6/10</td>
-            <td><div class="events">
-              <div><span class="event-time">10:00</span>인플루언서 미팅 (푸드스타일리 김OO)</div>
-              <div><span class="event-time">14:00</span>고객 설문 결과 공유 미팅</div>
-              <div><span class="event-time">16:00</span>콘텐츠 편집 회의</div>
-            </div></td>
-          </tr>
-          <tr>
-            <td class="day-label">목 6/11</td>
-            <td><div class="events">
-              <div><span class="event-time">09:30</span>영상 광고 촬영 (스튜디오)</div>
-              <div><span class="event-time">13:00</span>점심 미팅 — 광고 대행사</div>
-              <div><span class="event-time">15:00</span>SNS 콘텐츠 리뷰</div>
-            </div></td>
-          </tr>
-          <tr>
-            <td class="day-label">금 6/12</td>
-            <td><div class="events">
-              <div><span class="event-time">10:00</span>유튜브 채널 리뉴얼 최종 검토</div>
-              <div><span class="event-time">14:00</span>주간 성과 리뷰</div>
-              <div><span class="event-time">16:00</span>다음 주 콘텐츠 캘린더 확정</div>
-            </div></td>
-          </tr>
+        <tbody id="schedule-body">
+          <tr><td colspan="2" style="color:var(--text-muted);text-align:center;padding:20px">⏳ 불러오는 중...</td></tr>
         </tbody>
       </table>
     </div>
@@ -681,92 +601,8 @@
     <!-- ③ 프로젝트 진행률 -->
     <div class="card">
       <div class="card-title">🚀 프로젝트 진행률</div>
-      <div class="project-list">
-
-        <div class="project-item">
-          <div class="project-header">
-            <span class="project-name">유튜브 채널 리뉴얼</span>
-            <div class="project-meta">
-              <span class="status-badge status-마무리">마무리</span>
-              <span class="project-pct">80%</span>
-            </div>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width:80%;background:linear-gradient(90deg,#00b894,#55efc4);"></div>
-          </div>
-          <div class="project-sub"><span>박사원</span><span>마감 3/15</span></div>
-        </div>
-
-        <div class="project-item">
-          <div class="project-header">
-            <span class="project-name">봄맞이 프로모션</span>
-            <div class="project-meta">
-              <span class="status-badge status-진행중">진행중</span>
-              <span class="project-pct">65%</span>
-            </div>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width:65%;background:linear-gradient(90deg,#4361ee,#818cf8);"></div>
-          </div>
-          <div class="project-sub"><span>김대리 · 예산 500만원</span><span>마감 3/31</span></div>
-        </div>
-
-        <div class="project-item">
-          <div class="project-header">
-            <span class="project-name">홈페이지 리뉴얼</span>
-            <div class="project-meta">
-              <span class="status-badge status-진행중">진행중</span>
-              <span class="project-pct">45%</span>
-            </div>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width:45%;background:linear-gradient(90deg,#6c5ce7,#a29bfe);"></div>
-          </div>
-          <div class="project-sub"><span>이과장 · 예산 600만원</span><span>마감 4/15</span></div>
-        </div>
-
-        <div class="project-item">
-          <div class="project-header">
-            <span class="project-name">인플루언서 협업</span>
-            <div class="project-meta">
-              <span class="status-badge status-진행중">진행중</span>
-              <span class="project-pct">35%</span>
-            </div>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width:35%;background:linear-gradient(90deg,#e17055,#fd79a8);"></div>
-          </div>
-          <div class="project-sub"><span>이과장 · 예산 300만원</span><span>마감 3/28</span></div>
-        </div>
-
-        <div class="project-item">
-          <div class="project-header">
-            <span class="project-name">신제품 런칭 캠페인</span>
-            <div class="project-meta">
-              <span class="status-badge status-준비중">준비중</span>
-              <span class="project-pct">20%</span>
-            </div>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width:20%;background:linear-gradient(90deg,#fdcb6e,#e17055);"></div>
-          </div>
-          <div class="project-sub"><span>정팀장 · 예산 1,200만원</span><span>마감 4/30</span></div>
-        </div>
-
-        <div class="project-item">
-          <div class="project-header">
-            <span class="project-name">고객 리텐션 프로그램</span>
-            <div class="project-meta">
-              <span class="status-badge status-기획중">기획중</span>
-              <span class="project-pct">10%</span>
-            </div>
-          </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar-fill" style="width:10%;background:linear-gradient(90deg,#b2bec3,#dfe6e9);"></div>
-          </div>
-          <div class="project-sub"><span>정팀장 · 예산 800만원</span><span>마감 5/31</span></div>
-        </div>
-
+      <div class="project-list" id="project-list">
+        <div style="color:var(--text-muted);text-align:center;padding:20px">⏳ 불러오는 중...</div>
       </div>
     </div>
 
@@ -774,58 +610,174 @@
     <div class="card">
       <div class="card-title">💰 매출 요약</div>
 
-      <div class="sales-grid">
-        <div class="sales-card accent" style="grid-column:span 2;">
-          <div class="sales-label">누적 총 매출 (1~2월)</div>
-          <div class="sales-value">71,006,000원</div>
-          <div class="sales-sub">30건 거래 · 평균 2,367,000원/건</div>
-        </div>
-        <div class="sales-card">
-          <div class="sales-label">1월 매출</div>
-          <div class="sales-value">46,499,000원</div>
-          <div class="sales-sub">21건 거래</div>
-        </div>
-        <div class="sales-card">
-          <div class="sales-label">2월 매출</div>
-          <div class="sales-value">24,507,000원</div>
-          <div class="sales-sub">9건 거래</div>
-        </div>
-      </div>
-
-      <div class="category-row">
-        <div class="category-dot" style="background:#4361ee;"></div>
-        <span class="category-name">전자기기 (무선이어폰·스피커·보조배터리·충전기)</span>
-        <span class="category-amount">53,316,000원</span>
-        <span class="category-pct">75%</span>
-      </div>
-      <div class="category-row">
-        <div class="category-dot" style="background:#00b894;"></div>
-        <span class="category-name">생활용품 (텀블러·에코백)</span>
-        <span class="category-amount">17,690,000원</span>
-        <span class="category-pct">25%</span>
+      <div id="sales-content">
+        <div style="color:var(--text-muted);text-align:center;padding:20px">⏳ 불러오는 중...</div>
       </div>
     </div>
 
   </div><!-- /grid -->
 
   <script>
+    /* ── 테마 토글 ── */
     const html = document.documentElement;
     const btn  = document.getElementById('themeToggle');
-    function applyTheme(dark) {
-      html.classList.toggle('dark', dark);
-      btn.textContent = dark ? '☀️' : '🌙';
-    }
+    function applyTheme(dark) { html.classList.toggle('dark', dark); btn.textContent = dark ? '☀️' : '🌙'; }
     applyTheme(localStorage.getItem('theme') === 'dark');
     btn.addEventListener('click', () => {
       const isDark = html.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
       btn.textContent = isDark ? '☀️' : '🌙';
     });
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    /* ── 서비스 워커 ── */
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    /* ══════════════════════════════════════════════
+       Supabase 데이터 fetch & 렌더링
+    ══════════════════════════════════════════════ */
+    const PRIORITY_CLASS = { '높음': 'high', '보통': 'medium', '낮음': 'low' };
+    const PROJECT_COLORS = [
+      'linear-gradient(90deg,#00b894,#55efc4)',
+      'linear-gradient(90deg,#4361ee,#818cf8)',
+      'linear-gradient(90deg,#6c5ce7,#a29bfe)',
+      'linear-gradient(90deg,#e17055,#fd79a8)',
+      'linear-gradient(90deg,#fdcb6e,#e17055)',
+      'linear-gradient(90deg,#b2bec3,#dfe6e9)',
+    ];
+    const CAT_COLORS = { '전자기기': '#4361ee', '생활용품': '#00b894' };
+    const DAY_DATE   = { 1:'6/8', 2:'6/9', 3:'6/10', 4:'6/11', 5:'6/12' };
+    const fmt = n => n.toLocaleString() + '원';
+
+    function renderTasks(tasks) {
+      const ul = document.getElementById('todo-list');
+      ul.innerHTML = tasks.map(t => {
+        const done = t.status === '완료';
+        const dl   = t.deadline ? new Date(t.deadline) : null;
+        const dlStr = dl ? `${dl.getMonth()+1}/${dl.getDate()}${done?' ✓':''}` : '';
+        const pc   = PRIORITY_CLASS[t.priority] || 'medium';
+        return `<li class="todo-item${done?' done':''}">
+          <input type="checkbox"${done?' checked':''}/>
+          <span class="todo-text">${t.task}</span>
+          <span class="priority ${pc}">${t.priority||''}</span>
+          <span class="due">${dlStr}</span>
+        </li>`;
+      }).join('');
+      ul.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', function() { this.closest('.todo-item').classList.toggle('done', this.checked); });
+      });
     }
+
+    function renderSchedule(rows) {
+      const tbody = document.getElementById('schedule-body');
+      const orderSet = [...new Set(rows.map(r => r.day_order))].sort((a,b)=>a-b);
+      tbody.innerHTML = orderSet.map(ord => {
+        const dayRows = rows.filter(r => r.day_order === ord).sort((a,b) => a.time.localeCompare(b.time));
+        const dayName = dayRows[0].day;
+        return `<tr>
+          <td class="day-label">${dayName} ${DAY_DATE[ord]||''}</td>
+          <td><div class="events">${
+            dayRows.map(r => `<div><span class="event-time">${r.time}</span>${r.content}</div>`).join('')
+          }</div></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderProjects(projects) {
+      const list = document.getElementById('project-list');
+      list.innerHTML = projects.map((p, i) => {
+        const color  = PROJECT_COLORS[i % PROJECT_COLORS.length];
+        const endDate = p.end_date ? new Date(p.end_date) : null;
+        const endStr  = endDate ? `마감 ${endDate.getMonth()+1}/${endDate.getDate()}` : '';
+        const budgetStr = p.budget
+          ? `${p.assignee||''} · 예산 ${(p.budget*10000).toLocaleString()}원`
+          : (p.assignee||'');
+        return `<div class="project-item">
+          <div class="project-header">
+            <span class="project-name">${p.name}</span>
+            <div class="project-meta">
+              <span class="status-badge status-${p.status}">${p.status}</span>
+              <span class="project-pct">${p.progress}%</span>
+            </div>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width:${p.progress}%;background:${color};"></div>
+          </div>
+          <div class="project-sub"><span>${budgetStr}</span><span>${endStr}</span></div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderSales(sales) {
+      const container = document.getElementById('sales-content');
+      const total = sales.reduce((s, r) => s + r.amount, 0);
+
+      /* 월별 집계 */
+      const byMonth = {};
+      sales.forEach(r => {
+        const m = r.sale_date.slice(0,7);
+        byMonth[m] = (byMonth[m]||{total:0, count:0});
+        byMonth[m].total += r.amount; byMonth[m].count++;
+      });
+      const monthCards = Object.entries(byMonth).sort().map(([m, d]) => {
+        const mo = parseInt(m.split('-')[1]);
+        return `<div class="sales-card">
+          <div class="sales-label">${mo}월 매출</div>
+          <div class="sales-value">${fmt(d.total)}</div>
+          <div class="sales-sub">${d.count}건 거래</div>
+        </div>`;
+      }).join('');
+
+      /* 카테고리 집계 */
+      const byCat = {};
+      sales.forEach(r => { byCat[r.category] = (byCat[r.category]||0) + r.amount; });
+      const catRows = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([cat, amt]) => {
+        const pct = Math.round(amt / total * 100);
+        return `<div class="category-row">
+          <div class="category-dot" style="background:${CAT_COLORS[cat]||'#888'};"></div>
+          <span class="category-name">${cat}</span>
+          <span class="category-amount">${fmt(amt)}</span>
+          <span class="category-pct">${pct}%</span>
+        </div>`;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="sales-grid">
+          <div class="sales-card accent" style="grid-column:span 2;">
+            <div class="sales-label">누적 총 매출</div>
+            <div class="sales-value">${fmt(total)}</div>
+            <div class="sales-sub">${sales.length}건 거래 · 평균 ${fmt(Math.round(total/sales.length))}/건</div>
+          </div>
+          ${monthCards}
+        </div>
+        ${catRows}`;
+    }
+
+    /* ── Supabase 연결 및 fetch ── */
+    (async () => {
+      if (typeof SUPABASE_URL === 'undefined' || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+        ['todo-list','schedule-body','project-list','sales-content'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.innerHTML = `<${id==='todo-list'?'li':'div'} style="color:var(--text-muted);text-align:center;padding:20px">⚙️ config.js에 Supabase 정보를 입력해주세요.</${id==='todo-list'?'li':'div'}>`;
+        });
+        return;
+      }
+      try {
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const [tRes, sRes, pRes, saRes] = await Promise.all([
+          sb.from('tasks').select('*').order('deadline'),
+          sb.from('schedule').select('*').order('day_order').order('time'),
+          sb.from('projects').select('*').order('progress', { ascending: false }),
+          sb.from('sales').select('*').order('sale_date'),
+        ]);
+        if (tRes.data)  renderTasks(tRes.data);
+        if (sRes.data)  renderSchedule(sRes.data);
+        if (pRes.data)  renderProjects(pRes.data);
+        if (saRes.data) renderSales(saRes.data);
+      } catch(e) {
+        console.error('Supabase fetch 오류:', e);
+      }
+    })();
   </script>
 </body>
 </html>

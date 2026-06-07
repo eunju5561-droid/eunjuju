@@ -6,3 +6,9 @@
 # Claude Code 로컬 설정 (개인 환경 설정은 공유 불필요)
 .claude/settings.local.json
 .vercel
+
+# 원본 데이터 파일 (Supabase로 이전됨 - GitHub에 불필요)
+김비서-데이터/
+
+# SQL 스키마 (배포 불필요)
+supabase-schema.sql

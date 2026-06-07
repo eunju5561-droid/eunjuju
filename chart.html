@@ -12,6 +12,8 @@
   <link rel="apple-touch-icon" href="icon.svg"/>
   <title>매출 차트 · 김비서</title>
   <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <style>
     :root {
       --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.22) 0%, transparent 55%);
@@ -219,22 +221,12 @@
     <a href="report.html" class="nav-tab">🔍 사이트 분석</a>
   </nav>
 
-  <!-- 요약 수치 -->
-  <div class="stats">
+  <!-- 요약 수치 (Supabase에서 동적 로드) -->
+  <div class="stats" id="chart-stats">
     <div class="stat-card accent">
       <div class="stat-label">총 누적 매출</div>
-      <div class="stat-value">71,006,000원</div>
-      <div class="stat-sub">30건 거래</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">1월 매출</div>
-      <div class="stat-value">46,499,000원</div>
-      <div class="stat-sub">21건 거래</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">2월 매출</div>
-      <div class="stat-value">24,507,000원</div>
-      <div class="stat-sub">9건 거래</div>
+      <div class="stat-value" style="font-size:16px;color:rgba(255,255,255,.6)">⏳ 불러오는 중...</div>
+      <div class="stat-sub">–</div>
     </div>
   </div>
 
@@ -261,29 +253,19 @@
 
 <script>
 /* ══════════════════════════════════════
-   데이터
+   전역 데이터 (Supabase에서 채워짐)
 ══════════════════════════════════════ */
-const dateData = [
-  { label:'1/05', total:7075000  },
-  { label:'1/08', total:8413000  },
-  { label:'1/12', total:4135000  },
-  { label:'1/15', total:8122000  },
-  { label:'1/19', total:5060000  },
-  { label:'1/22', total:9029000  },
-  { label:'1/26', total:4665000  },
-  { label:'2/01', total:10110000 },
-  { label:'2/05', total:6195000  },
-  { label:'2/10', total:8202000  },
-];
+let dateData    = [];
+let productData = [];
 
-const productData = [
-  { name:'무선 이어폰',    total:28836000, color:'#4361ee' },
-  { name:'텀블러',         total:11525000, color:'#00b894' },
-  { name:'블루투스 스피커', total:9600000,  color:'#3b82f6' },
-  { name:'보조배터리',      total:9030000,  color:'#6c81f5' },
-  { name:'에코백',          total:6165000,  color:'#34d399' },
-  { name:'무선 충전기',     total:5850000,  color:'#60a5fa' },
-];
+const PRODUCT_COLORS = {
+  '무선 이어폰':     '#4361ee',
+  '텀블러':          '#00b894',
+  '블루투스 스피커': '#3b82f6',
+  '보조배터리':      '#6c81f5',
+  '에코백':          '#34d399',
+  '무선 충전기':     '#60a5fa',
+};
 
 /* ══════════════════════════════════════
    헬퍼
@@ -550,18 +532,21 @@ barCanvas.addEventListener('mouseleave', () => { barTip.style.opacity = '0'; });
 /* ══════════════════════════════════════
    범례 빌드
 ══════════════════════════════════════ */
-const legend = document.getElementById('barLegend');
-productData.forEach(p => {
-  const item = document.createElement('div');
-  item.className = 'legend-item';
-  item.innerHTML = `<span class="legend-dot" style="background:${p.color};"></span>${p.name} <span style="margin-left:4px;font-weight:700;">${fmt(p.total)}원</span>`;
-  legend.appendChild(item);
-});
+function buildLegend() {
+  const legend = document.getElementById('barLegend');
+  legend.innerHTML = '';
+  productData.forEach(p => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<span class="legend-dot" style="background:${p.color};"></span>${p.name} <span style="margin-left:4px;font-weight:700;">${fmt(p.total)}원</span>`;
+    legend.appendChild(item);
+  });
+}
 
 /* ══════════════════════════════════════
    테마 토글 + 전체 다시 그리기
 ══════════════════════════════════════ */
-function drawAll() { drawLine(); drawBar(); }
+function drawAll() { if (dateData.length && productData.length) { drawLine(); drawBar(); } }
 
 const html = document.documentElement;
 const btn  = document.getElementById('themeToggle');
@@ -577,9 +562,69 @@ btn.addEventListener('click', () => {
   btn.textContent = isDark ? '☀️' : '🌙';
   drawAll();
 });
-
-/* 창 크기 변경 시 재렌더 */
 window.addEventListener('resize', drawAll);
+
+/* ══════════════════════════════════════
+   Supabase 데이터 fetch
+══════════════════════════════════════ */
+(async () => {
+  if (typeof SUPABASE_URL === 'undefined' || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    document.getElementById('chart-stats').innerHTML =
+      '<div class="stat-card accent"><div class="stat-label">⚙️ 설정 필요</div><div class="stat-value" style="font-size:14px">config.js에 Supabase 정보를 입력해주세요</div></div>';
+    return;
+  }
+  try {
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { data } = await sb.from('sales').select('*').order('sale_date');
+    if (!data || !data.length) return;
+
+    /* 통계 카드 */
+    const total = data.reduce((s, r) => s + r.amount, 0);
+    const byMonth = {};
+    data.forEach(r => {
+      const m = r.sale_date.slice(0, 7);
+      byMonth[m] = byMonth[m] || { total: 0, count: 0 };
+      byMonth[m].total += r.amount; byMonth[m].count++;
+    });
+    const monthCards = Object.entries(byMonth).sort().map(([m, d]) => {
+      const mo = parseInt(m.split('-')[1]);
+      return `<div class="stat-card">
+        <div class="stat-label">${mo}월 매출</div>
+        <div class="stat-value">${fmt(d.total)}원</div>
+        <div class="stat-sub">${d.count}건 거래</div>
+      </div>`;
+    }).join('');
+    document.getElementById('chart-stats').innerHTML = `
+      <div class="stat-card accent">
+        <div class="stat-label">총 누적 매출</div>
+        <div class="stat-value">${fmt(total)}원</div>
+        <div class="stat-sub">${data.length}건 거래</div>
+      </div>${monthCards}`;
+
+    /* dateData */
+    const byDate = {};
+    data.forEach(r => { byDate[r.sale_date] = (byDate[r.sale_date] || 0) + r.amount; });
+    dateData = Object.entries(byDate).sort().map(([d, tot]) => {
+      const p = d.split('-');
+      return { label: `${parseInt(p[1])}/${parseInt(p[2])}`, total: tot };
+    });
+
+    /* productData */
+    const byProduct = {};
+    data.forEach(r => { byProduct[r.product] = (byProduct[r.product] || 0) + r.amount; });
+    const PALETTE = ['#4361ee','#00b894','#3b82f6','#6c81f5','#34d399','#60a5fa','#f59e0b','#ef4444'];
+    productData = Object.entries(byProduct).sort((a, b) => b[1] - a[1]).map(([name, tot], i) => ({
+      name, total: tot,
+      color: PRODUCT_COLORS[name] || PALETTE[i % PALETTE.length],
+    }));
+
+    buildLegend();
+    drawAll();
+  } catch (e) {
+    console.error('Supabase fetch 오류:', e);
+  }
+})();
 </script>
   <script>
     if ('serviceWorker' in navigator) {
