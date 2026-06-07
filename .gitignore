@@ -5,3 +5,4 @@
 
 # Claude Code 로컬 설정 (개인 환경 설정은 공유 불필요)
 .claude/settings.local.json
+.vercel
