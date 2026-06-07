@@ -479,6 +479,80 @@
     html.dark .nav-tab.active {
       box-shadow: 0 4px 14px rgba(129,140,248,.28);
     }
+
+    /* ═══════════════════════════════════════
+       반응형 · 태블릿 (≤1023px)
+    ═══════════════════════════════════════ */
+    @media (max-width: 1023px) {
+      body { padding: 16px 16px 28px; }
+      header { padding: 12px 16px 12px; padding-right: 72px; }
+      .card { padding: 18px 20px; }
+      .nav-tab { padding: 8px 14px; font-size: 12px; }
+    }
+
+    /* ═══════════════════════════════════════
+       반응형 · 모바일 (≤639px)
+    ═══════════════════════════════════════ */
+    @media (max-width: 639px) {
+      body { padding: 12px 12px 28px; }
+
+      /* 헤더 */
+      header {
+        padding: 11px 14px;
+        padding-right: 66px;
+        gap: 8px;
+        flex-wrap: wrap;
+        border-radius: 14px;
+      }
+      header h1 { font-size: 16px; }
+      header .date { display: none; }
+      .back-link { font-size: 12px; padding: 6px 11px; }
+
+      /* 그리드: 1열 스택 */
+      .grid { grid-template-columns: 1fr; gap: 12px; }
+
+      /* 카드 */
+      .card { padding: 16px; border-radius: 18px; }
+      .card-title { font-size: 13px; margin-bottom: 12px; }
+
+      /* 네비게이션 탭 */
+      .nav-tabs { padding: 5px; gap: 3px; border-radius: 14px; margin-bottom: 12px; }
+      .nav-tab { padding: 7px 11px; font-size: 12px; border-radius: 10px; gap: 4px; }
+
+      /* 할 일 목록 */
+      .todo-list { gap: 6px; }
+      .todo-item { padding: 8px 10px; gap: 8px; }
+      .todo-text { font-size: 12px; }
+      .priority { font-size: 9px; padding: 2px 6px; }
+      .due { font-size: 10px; }
+
+      /* 일정 테이블 */
+      .schedule-table th { padding: 8px 8px; font-size: 10px; letter-spacing: 0; }
+      .schedule-table td { padding: 7px 8px; font-size: 11px; }
+      .events { gap: 2px; }
+      .event-time { font-size: 10px; }
+
+      /* 프로젝트 진행률 */
+      .project-list { gap: 11px; }
+      .project-name { font-size: 12px; }
+      .project-pct  { font-size: 12px; }
+      .status-badge { font-size: 9px; padding: 2px 6px; }
+      .project-sub  { font-size: 10px; }
+
+      /* 매출 요약 */
+      .sales-grid { grid-template-columns: 1fr; }
+      .sales-grid > * { grid-column: span 1 !important; }
+      .sales-value { font-size: 15px; }
+      .sales-card.accent .sales-value { font-size: 17px; }
+      .sales-label { font-size: 10px; }
+      .category-row { gap: 8px; padding: 8px 0; }
+      .category-name   { font-size: 11px; }
+      .category-amount { font-size: 12px; }
+      .category-pct    { font-size: 10px; }
+
+      /* 테마 토글 */
+      .theme-toggle { width: 42px; height: 42px; font-size: 19px; top: 14px; right: 14px; }
+    }
   </style>
 </head>
 <body>
