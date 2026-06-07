@@ -12,3 +12,6 @@
 
 # SQL 스키마 (배포 불필요)
 supabase-schema.sql
+
+# Supabase CLI 임시 파일
+supabase/.temp
