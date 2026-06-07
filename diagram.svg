@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="800" height="200" viewBox="0 0 800 200"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+
+  <defs>
+    <!-- 카드 그림자 -->
+    <filter id="sh" x="-20%" y="-25%" width="140%" height="175%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.11)"/>
+    </filter>
+
+    <!-- 화살표 마커 -->
+    <marker id="arr" viewBox="0 0 12 12" refX="11" refY="6"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,1.5 L10.5,6 L0,10.5 Z" fill="#BCC8DC"/>
+    </marker>
+
+    <!-- 원형 클립 (내부 상단 불투명 링 효과용) -->
+  </defs>
+
+  <!-- ── 배경 ── -->
+  <rect width="800" height="200" fill="#EEF2FF"/>
+
+  <!-- ════════════════════════════════════
+       STEP 01 · 기획  (파랑)
+  ════════════════════════════════════ -->
+  <!-- 카드 -->
+  <rect x="20" y="56" width="124" height="88" rx="16"
+        fill="#DBEAFE" stroke="#BFDBFE" stroke-width="1.5" filter="url(#sh)"/>
+  <!-- 단계 원 -->
+  <circle cx="82" cy="82" r="14" fill="#3B82F6"/>
+  <text x="82" y="82"
+        text-anchor="middle" dominant-baseline="central"
+        fill="white" font-size="11" font-weight="700" letter-spacing="0.3">01</text>
+  <!-- 단계명 -->
+  <text x="82" y="122"
+        text-anchor="middle" dominant-baseline="central"
+        fill="#1D4ED8" font-size="16" font-weight="800">기획</text>
+
+  <!-- ── 화살표 1 ── -->
+  <line x1="145" y1="100" x2="179" y2="100"
+        stroke="#BCC8DC" stroke-width="2" stroke-linecap="round"
+        marker-end="url(#arr)"/>
+
+  <!-- ════════════════════════════════════
+       STEP 02 · 제작  (초록)
+  ════════════════════════════════════ -->
+  <rect x="180" y="56" width="124" height="88" rx="16"
+        fill="#D1FAE5" stroke="#A7F3D0" stroke-width="1.5" filter="url(#sh)"/>
+  <circle cx="242" cy="82" r="14" fill="#10B981"/>
+  <text x="242" y="82"
+        text-anchor="middle" dominant-baseline="central"
+        fill="white" font-size="11" font-weight="700" letter-spacing="0.3">02</text>
+  <text x="242" y="122"
+        text-anchor="middle" dominant-baseline="central"
+        fill="#065F46" font-size="16" font-weight="800">제작</text>
+
+  <!-- ── 화살표 2 ── -->
+  <line x1="305" y1="100" x2="339" y2="100"
+        stroke="#BCC8DC" stroke-width="2" stroke-linecap="round"
+        marker-end="url(#arr)"/>
+
+  <!-- ════════════════════════════════════
+       STEP 03 · 검토  (황색)
+  ════════════════════════════════════ -->
+  <rect x="340" y="56" width="124" height="88" rx="16"
+        fill="#FEF3C7" stroke="#FDE68A" stroke-width="1.5" filter="url(#sh)"/>
+  <circle cx="402" cy="82" r="14" fill="#F59E0B"/>
+  <text x="402" y="82"
+        text-anchor="middle" dominant-baseline="central"
+        fill="white" font-size="11" font-weight="700" letter-spacing="0.3">03</text>
+  <text x="402" y="122"
+        text-anchor="middle" dominant-baseline="central"
+        fill="#92400E" font-size="16" font-weight="800">검토</text>
+
+  <!-- ── 화살표 3 ── -->
+  <line x1="465" y1="100" x2="499" y2="100"
+        stroke="#BCC8DC" stroke-width="2" stroke-linecap="round"
+        marker-end="url(#arr)"/>
+
+  <!-- ════════════════════════════════════
+       STEP 04 · 배포  (보라)
+  ════════════════════════════════════ -->
+  <rect x="500" y="56" width="124" height="88" rx="16"
+        fill="#EDE9FE" stroke="#DDD6FE" stroke-width="1.5" filter="url(#sh)"/>
+  <circle cx="562" cy="82" r="14" fill="#8B5CF6"/>
+  <text x="562" y="82"
+        text-anchor="middle" dominant-baseline="central"
+        fill="white" font-size="11" font-weight="700" letter-spacing="0.3">04</text>
+  <text x="562" y="122"
+        text-anchor="middle" dominant-baseline="central"
+        fill="#4C1D95" font-size="16" font-weight="800">배포</text>
+
+  <!-- ── 화살표 4 ── -->
+  <line x1="625" y1="100" x2="659" y2="100"
+        stroke="#BCC8DC" stroke-width="2" stroke-linecap="round"
+        marker-end="url(#arr)"/>
+
+  <!-- ════════════════════════════════════
+       STEP 05 · 분석  (분홍)
+  ════════════════════════════════════ -->
+  <rect x="660" y="56" width="124" height="88" rx="16"
+        fill="#FFE4E6" stroke="#FECDD3" stroke-width="1.5" filter="url(#sh)"/>
+  <circle cx="722" cy="82" r="14" fill="#F43F5E"/>
+  <text x="722" y="82"
+        text-anchor="middle" dominant-baseline="central"
+        fill="white" font-size="11" font-weight="700" letter-spacing="0.3">05</text>
+  <text x="722" y="122"
+        text-anchor="middle" dominant-baseline="central"
+        fill="#881337" font-size="16" font-weight="800">분석</text>
+
+</svg>

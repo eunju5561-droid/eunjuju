@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>김비서를 소개합니다</title>
+  <!-- 테마 깜빡임 방지: body 렌더 전에 class 적용 -->
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <style>
+    /* ────────────────── CSS 변수 · 라이트 ────────────────── */
+    :root {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.22) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(167,139,250,.18) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.14) 0%, transparent 45%);
+      --bg-base: linear-gradient(145deg,#e8edff 0%,#ede8ff 50%,#e4f0ff 100%);
+
+      --card-bg: rgba(255,255,255,.70);
+      --card-border: rgba(255,255,255,.60);
+      --card-shadow: 0 8px 32px rgba(67,97,238,.12), 0 2px 8px rgba(67,97,238,.07);
+      --card-hover-shadow: 0 22px 52px rgba(67,97,238,.24), 0 4px 14px rgba(67,97,238,.12);
+
+      --text-primary: #1a1a2e;
+      --text-secondary: #4a4a6a;
+      --text-muted: #8080a0;
+
+      --accent: #4361ee;
+      --accent2: #7c3aed;
+      --accent-glow: rgba(67,97,238,.38);
+
+      --badge-bg: rgba(67,97,238,.10);
+      --badge-border: rgba(67,97,238,.22);
+      --badge-text: #4361ee;
+
+      --toggle-bg: rgba(255,255,255,.78);
+      --toggle-border: rgba(255,255,255,.65);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.10);
+    }
+
+    /* ────────────────── CSS 변수 · 다크 ────────────────── */
+    html.dark {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.24) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(139,92,246,.20) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.16) 0%, transparent 45%);
+      --bg-base: #0f0f23;
+
+      --card-bg: rgba(255,255,255,.065);
+      --card-border: rgba(255,255,255,.10);
+      --card-shadow: 0 8px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.30);
+      --card-hover-shadow: 0 22px 52px rgba(129,140,248,.22), 0 4px 14px rgba(0,0,0,.40);
+
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0c0;
+      --text-muted: #606080;
+
+      --accent: #818cf8;
+      --accent2: #a78bfa;
+      --accent-glow: rgba(129,140,248,.42);
+
+      --badge-bg: rgba(129,140,248,.16);
+      --badge-border: rgba(129,140,248,.28);
+      --badge-text: #a5b4fc;
+
+      --toggle-bg: rgba(255,255,255,.08);
+      --toggle-border: rgba(255,255,255,.13);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.40);
+    }
+
+    /* ────────────────── 기본 리셋 ────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      transition: color .32s, background-color .32s, border-color .32s;
+    }
+
+    html { min-height: 100%; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      background: var(--bg-a), var(--bg-b), var(--bg-c), var(--bg-base);
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 70px 24px;
+    }
+
+    /* ────────────────── 테마 토글 ────────────────── */
+    .theme-toggle {
+      position: fixed;
+      top: 20px; right: 20px;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--toggle-shadow);
+      font-size: 22px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      transition: transform .22s, box-shadow .22s, background-color .32s, border-color .32s !important;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.14) rotate(14deg);
+      box-shadow: 0 8px 28px rgba(0,0,0,.18);
+    }
+
+    /* ────────────────── 히어로 ────────────────── */
+    .hero { text-align: center; max-width: 740px; width: 100%; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      border: 1px solid var(--badge-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border-radius: 99px;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: 60px;
+      font-weight: 900;
+      color: var(--text-primary);
+      line-height: 1.12;
+      margin-bottom: 22px;
+      letter-spacing: -2px;
+    }
+
+    h1 .grad {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 55%, #ec4899 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-bottom: 54px;
+      line-height: 1.78;
+    }
+
+    /* ────────────────── 피처 카드 ────────────────── */
+    .features {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 56px;
+      flex-wrap: wrap;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 24px;
+      padding: 32px 22px;
+      width: 200px;
+      box-shadow: var(--card-shadow);
+      transition: color .32s, background-color .32s, border-color .32s,
+                  transform .26s cubic-bezier(.34,1.56,.64,1), box-shadow .26s !important;
+      cursor: default;
+    }
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--card-hover-shadow) !important;
+    }
+
+    .feature-icon { font-size: 38px; margin-bottom: 16px; }
+
+    .feature-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ────────────────── CTA 버튼 ────────────────── */
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #4361ee 0%, #7c3aed 58%, #ec4899 100%);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 20px 58px;
+      border-radius: 18px;
+      text-decoration: none;
+      letter-spacing: .2px;
+      box-shadow: 0 6px 34px var(--accent-glow);
+      transition: transform .22s, box-shadow .22s, filter .22s !important;
+    }
+    .cta-btn:hover {
+      transform: translateY(-4px);
+      filter: brightness(1.09);
+      box-shadow: 0 16px 46px var(--accent-glow);
+    }
+    .cta-btn:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" id="themeToggle" title="다크/라이트 모드 전환">🌙</button>
+
+  <div class="hero">
+    <div class="badge">✨ AI 업무 비서</div>
+    <h1>김비서를<br /><span class="grad">소개합니다</span></h1>
+    <p class="subtitle">
+      복잡한 업무를 한눈에 — 일정·할 일·프로젝트·매출을<br />
+      깔끔하게 정리해 드리는 스마트 업무 대시보드입니다.
+    </p>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <div class="feature-title">할 일 관리</div>
+        <div class="feature-desc">우선순위별로 업무를 분류하고 진행 상황을 추적합니다</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">일정 관리</div>
+        <div class="feature-desc">이번 주 스케줄을 한눈에 확인하고 준비할 수 있습니다</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">성과 리포트</div>
+        <div class="feature-desc">프로젝트 진행률과 매출 현황을 실시간으로 파악합니다</div>
+      </div>
+    </div>
+
+    <a href="dashboard.html" class="cta-btn">내 대시보드 보기 →</a>
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const btn  = document.getElementById('themeToggle');
+    function applyTheme(dark) {
+      html.classList.toggle('dark', dark);
+      btn.textContent = dark ? '☀️' : '🌙';
+    }
+    applyTheme(localStorage.getItem('theme') === 'dark');
+    btn.addEventListener('click', () => {
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      btn.textContent = isDark ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회의록 · 마케팅팀 주간회의</title>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <style>
+    /* ────────── CSS 변수 ────────── */
+    :root {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.20) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(167,139,250,.16) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.13) 0%, transparent 45%);
+      --bg-base: linear-gradient(145deg,#e8edff 0%,#ede8ff 50%,#e4f0ff 100%);
+
+      --card-bg: rgba(255,255,255,.72);
+      --card-border: rgba(255,255,255,.60);
+      --card-shadow: 0 8px 32px rgba(67,97,238,.12), 0 2px 8px rgba(67,97,238,.07);
+
+      --text-primary: #1a1a2e;
+      --text-secondary: #4a4a6a;
+      --text-muted: #8080a0;
+      --accent: #4361ee;
+
+      --th-bg: rgba(67,97,238,.82);
+      --th-text: #fff;
+      --td-even: rgba(67,97,238,.035);
+      --td-border: rgba(0,0,0,.07);
+
+      --tag-bg: rgba(67,97,238,.10);
+      --tag-text: #4361ee;
+      --tag-border: rgba(67,97,238,.20);
+
+      --badge-person-bg: rgba(124,58,237,.10);
+      --badge-person-tx: #6d28d9;
+
+      --divider: rgba(0,0,0,.07);
+      --summary-bg: rgba(67,97,238,.04);
+      --summary-border: rgba(67,97,238,.15);
+
+      --toggle-bg: rgba(255,255,255,.78);
+      --toggle-border: rgba(255,255,255,.65);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.10);
+    }
+
+    html.dark {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.24) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(139,92,246,.20) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.16) 0%, transparent 45%);
+      --bg-base: #0f0f23;
+
+      --card-bg: rgba(255,255,255,.065);
+      --card-border: rgba(255,255,255,.10);
+      --card-shadow: 0 8px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.30);
+
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0c0;
+      --text-muted: #606080;
+      --accent: #818cf8;
+
+      --th-bg: rgba(99,102,241,.28);
+      --th-text: #c7d2fe;
+      --td-even: rgba(255,255,255,.03);
+      --td-border: rgba(255,255,255,.065);
+
+      --tag-bg: rgba(129,140,248,.15);
+      --tag-text: #a5b4fc;
+      --tag-border: rgba(129,140,248,.28);
+
+      --badge-person-bg: rgba(167,139,250,.18);
+      --badge-person-tx: #c4b5fd;
+
+      --divider: rgba(255,255,255,.07);
+      --summary-bg: rgba(129,140,248,.06);
+      --summary-border: rgba(129,140,248,.20);
+
+      --toggle-bg: rgba(255,255,255,.08);
+      --toggle-border: rgba(255,255,255,.13);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.40);
+    }
+
+    /* ────────── 기본 ────────── */
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      transition: color .32s, background-color .32s, border-color .32s;
+    }
+
+    html { min-height: 100%; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      background: var(--bg-a), var(--bg-b), var(--bg-c), var(--bg-base);
+      background-attachment: fixed;
+      padding: 40px 24px 56px;
+      color: var(--text-primary);
+    }
+
+    /* ────────── 토글 ────────── */
+    .theme-toggle {
+      position: fixed;
+      top: 20px; right: 20px;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--toggle-shadow);
+      font-size: 22px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      transition: transform .22s, box-shadow .22s, background-color .32s, border-color .32s !important;
+    }
+    .theme-toggle:hover { transform: scale(1.14) rotate(14deg); }
+
+    /* ────────── 인쇄 버튼 ────────── */
+    .print-btn {
+      position: fixed;
+      top: 76px; right: 20px;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--toggle-shadow);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      transition: transform .22s, background-color .32s !important;
+    }
+    .print-btn:hover { transform: scale(1.14); }
+
+    /* ────────── 문서 래퍼 ────────── */
+    .doc {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ────────── 섹션 카드 ────────── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: var(--card-shadow);
+    }
+
+    /* ────────── 문서 헤더 ────────── */
+    .doc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .doc-header-left {}
+
+    .doc-type {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border: 1px solid var(--tag-border);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 99px;
+      margin-bottom: 14px;
+    }
+
+    .doc-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -.5px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .doc-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--divider);
+    }
+
+    .meta-item {}
+    .meta-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .meta-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .attendees {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .badge-person {
+      background: var(--badge-person-bg);
+      color: var(--badge-person-tx);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 11px;
+      border-radius: 8px;
+    }
+
+    /* ────────── 섹션 제목 ────────── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -.1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider);
+    }
+
+    /* ────────── 논의 내용 요약 ────────── */
+    .summary-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .summary-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--summary-bg);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .summary-num {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--accent);
+      min-width: 20px;
+      padding-top: 1px;
+    }
+
+    .summary-text { flex: 1; }
+    .summary-text strong { color: var(--text-primary); font-weight: 700; }
+
+    /* ────────── 액션 아이템 테이블 ────────── */
+    .action-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .action-table th {
+      background: var(--th-bg);
+      color: var(--th-text);
+      padding: 11px 16px;
+      text-align: left;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+    .action-table th:first-child { border-radius: 12px 0 0 0; }
+    .action-table th:last-child  { border-radius: 0 12px 0 0; }
+
+    .action-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--td-border);
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+    .action-table tr:last-child td { border-bottom: none; border-radius: 0 0 12px 12px; }
+    .action-table tr:nth-child(even) td { background: var(--td-even); }
+
+    .person-chip {
+      display: inline-block;
+      background: var(--badge-person-bg);
+      color: var(--badge-person-tx);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 11px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .action-task { color: var(--text-primary); font-weight: 500; line-height: 1.5; }
+
+    .due-chip {
+      display: inline-block;
+      background: rgba(67,97,238,.08);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 11px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    html.dark .due-chip {
+      background: rgba(129,140,248,.14);
+      color: #818cf8;
+    }
+
+    /* ────────── 다음 회의 ────────── */
+    .next-meeting {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--summary-bg);
+      border: 1px solid var(--summary-border);
+      border-radius: 14px;
+      padding: 18px 22px;
+      font-size: 14px;
+    }
+
+    .next-icon { font-size: 28px; }
+    .next-label { font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+    .next-value { font-size: 15px; font-weight: 800; color: var(--text-primary); }
+
+    /* ────────── 인쇄 스타일 ────────── */
+    @media print {
+      html, body { background: #fff !important; color: #000 !important; }
+      .theme-toggle, .print-btn { display: none !important; }
+      .card {
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        border-radius: 8px !important;
+        break-inside: avoid;
+      }
+      .doc { gap: 14px; }
+      body { padding: 20px; }
+
+      .doc-title { color: #000 !important; }
+      .doc-type  { color: #4361ee !important; background: #eef !important; }
+      .section-title, .meta-label { color: #555 !important; }
+      .meta-value, .action-task, .next-value { color: #000 !important; }
+      .text-secondary, .summary-item { color: #333 !important; }
+
+      .action-table th { background: #4361ee !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .action-table tr:nth-child(even) td { background: #f7f8ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+      .summary-item { background: #f7f8ff !important; border-left-color: #4361ee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .badge-person, .person-chip { background: #ede9fe !important; color: #6d28d9 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .due-chip { background: #eef !important; color: #4361ee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    /* ── 네비게이션 탭 ── */
+    .nav-tabs {
+      display: flex; gap: 5px;
+      max-width: 860px; margin: 0 auto 20px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 18px; padding: 7px;
+      box-shadow: var(--card-shadow); overflow-x: auto; scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 12px; text-decoration: none;
+      font-size: 13px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap; flex-shrink: 0;
+      transition: background-color .2s, color .2s, box-shadow .2s !important;
+    }
+    .nav-tab:hover { background: rgba(67,97,238,.08); color: var(--accent); }
+    .nav-tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(67,97,238,.32); }
+    html.dark .nav-tab.active { box-shadow: 0 4px 14px rgba(129,140,248,.28); }
+    @media print { .nav-tabs { display: none !important; } }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" id="themeToggle" title="다크/라이트 모드 전환">🌙</button>
+  <button class="print-btn" onclick="window.print()" title="인쇄">🖨️</button>
+
+  <nav class="nav-tabs">
+    <a href="dashboard.html" class="nav-tab">📊 대시보드</a>
+    <a href="meeting-result.html" class="nav-tab active">📝 회의록</a>
+    <a href="chart.html" class="nav-tab">📈 매출 현황</a>
+    <a href="diagram.html" class="nav-tab">🔄 업무 프로세스</a>
+    <a href="report.html" class="nav-tab">🔍 사이트 분석</a>
+  </nav>
+
+  <div class="doc">
+
+    <!-- ① 회의 기본 정보 -->
+    <div class="card">
+      <div class="doc-header">
+        <div class="doc-header-left">
+          <div class="doc-type">📄 회의록</div>
+          <div class="doc-title">마케팅팀 주간회의</div>
+          <div class="doc-sub">작성일 기준 최신 회의 요약</div>
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">📅 회의 일시</div>
+          <div class="meta-value">2026년 3월 10일 (월) · 오전 10:00</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">🔁 다음 회의</div>
+          <div class="meta-value">2026년 3월 17일 (월) · 오전 10:00</div>
+        </div>
+        <div class="meta-item" style="grid-column:span 2;">
+          <div class="meta-label">👥 참석자</div>
+          <div class="attendees">
+            <span class="badge-person">김대리</span>
+            <span class="badge-person">이과장</span>
+            <span class="badge-person">박사원</span>
+            <span class="badge-person">정팀장</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ② 논의 내용 요약 -->
+    <div class="card">
+      <div class="section-title">💬 논의 내용 요약</div>
+      <ul class="summary-list">
+        <li class="summary-item">
+          <span class="summary-num">01</span>
+          <span class="summary-text">SNS 광고 A/B 테스트 결과, <strong>B안(영상형)</strong>이 A안(이미지형) 대비 클릭률 <strong>2.3배</strong> 높아 B안 기반으로 방향을 확정했다.</span>
+        </li>
+        <li class="summary-item">
+          <span class="summary-num">02</span>
+          <span class="summary-text">블로그 콘텐츠 3건 발행을 완료했으며, 인플루언서 협업 제안서 발송 3곳 중 <strong>푸드스타일리 김OO</strong> 1곳에서 회신이 도착해 미팅 일정을 조율 중이다.</span>
+        </li>
+        <li class="summary-item">
+          <span class="summary-num">03</span>
+          <span class="summary-text">4월 신제품 런칭을 앞두고 사전 티저 콘텐츠를 <strong>3월 넷째 주</strong>부터 시작하기로 결정했다.</span>
+        </li>
+        <li class="summary-item">
+          <span class="summary-num">04</span>
+          <span class="summary-text">B안 영상 광고 추가 제작으로 인해 <strong>영상 제작비 200만원</strong> 예산 증액 요청을 진행할 예정이다.</span>
+        </li>
+        <li class="summary-item">
+          <span class="summary-num">05</span>
+          <span class="summary-text">다음 주간 회의(3/17)에서 <strong>3월 프로모션 기획안</strong> 초안을 팀 전체가 함께 검토할 예정이다.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ③ 액션 아이템 -->
+    <div class="card">
+      <div class="section-title">✅ 액션 아이템</div>
+      <table class="action-table">
+        <thead>
+          <tr>
+            <th>담당자</th>
+            <th>할 일</th>
+            <th>기한</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="person-chip">김대리</span></td>
+            <td class="action-task">3월 프로모션 기획안 초안 작성</td>
+            <td><span class="due-chip">3월 12일 (수)</span></td>
+          </tr>
+          <tr>
+            <td><span class="person-chip">이과장</span></td>
+            <td class="action-task">인플루언서 미팅 일정 확정 (푸드스타일리 김OO)</td>
+            <td><span class="due-chip">3월 14일 (금)</span></td>
+          </tr>
+          <tr>
+            <td><span class="person-chip">박사원</span></td>
+            <td class="action-task">B안 기반 영상 광고 3개 추가 제작</td>
+            <td><span class="due-chip">3월 14일 (금)</span></td>
+          </tr>
+          <tr>
+            <td><span class="person-chip">박사원</span></td>
+            <td class="action-task">경쟁사 C사 신규 캠페인 분석 리포트 작성</td>
+            <td><span class="due-chip">3월 16일 (일)</span></td>
+          </tr>
+          <tr>
+            <td><span class="person-chip">정팀장</span></td>
+            <td class="action-task">영상 제작비 추가 200만원 예산 증액 요청</td>
+            <td><span class="due-chip">차주 회의 전</span></td>
+          </tr>
+          <tr>
+            <td><span class="person-chip">정팀장</span></td>
+            <td class="action-task">4월 신제품 티저 콘텐츠 기획 착수 (3월 넷째 주 시작 목표)</td>
+            <td><span class="due-chip">3월 21일 (토)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ④ 다음 회의 -->
+    <div class="card">
+      <div class="section-title">📌 다음 회의</div>
+      <div class="next-meeting">
+        <div class="next-icon">🗓️</div>
+        <div>
+          <div class="next-label">일정</div>
+          <div class="next-value">2026년 3월 17일 (월) · 오전 10:00</div>
+        </div>
+        <div style="margin-left:32px;">
+          <div class="next-label">주요 안건</div>
+          <div class="next-value" style="font-size:13px;font-weight:600;">3월 프로모션 기획안 검토</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc -->
+
+  <script>
+    const html = document.documentElement;
+    const btn  = document.getElementById('themeToggle');
+    function applyTheme(dark) {
+      html.classList.toggle('dark', dark);
+      btn.textContent = dark ? '☀️' : '🌙';
+    }
+    applyTheme(localStorage.getItem('theme') === 'dark');
+    btn.addEventListener('click', () => {
+      const isDark = html.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      btn.textContent = isDark ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>

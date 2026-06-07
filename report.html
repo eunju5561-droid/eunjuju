@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>사이트 분석 리포트 · subtrac.kr</title>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <style>
+    :root {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.22) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(167,139,250,.18) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.14) 0%, transparent 45%);
+      --bg-base: linear-gradient(145deg,#e8edff 0%,#ede8ff 50%,#e4f0ff 100%);
+      --card-bg: rgba(255,255,255,.72);
+      --card-border: rgba(255,255,255,.60);
+      --card-shadow: 0 8px 32px rgba(67,97,238,.11), 0 2px 8px rgba(67,97,238,.07);
+      --text-primary: #1a1a2e;
+      --text-secondary: #4a4a6a;
+      --text-muted: #8080a0;
+      --accent: #4361ee;
+      --divider: rgba(0,0,0,.07);
+      --tag-bg: rgba(67,97,238,.09);
+      --tag-border: rgba(67,97,238,.20);
+      --tag-text: #4361ee;
+      --good-bg: rgba(16,185,129,.08);
+      --good-border: rgba(16,185,129,.20);
+      --good-text: #065f46;
+      --good-dot: #10b981;
+      --bad-bg: rgba(245,158,11,.08);
+      --bad-border: rgba(245,158,11,.22);
+      --bad-text: #92400e;
+      --bad-dot: #f59e0b;
+      --feat-bg: rgba(67,97,238,.05);
+      --feat-border: rgba(67,97,238,.14);
+      --toggle-bg: rgba(255,255,255,.78);
+      --toggle-border: rgba(255,255,255,.65);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.10);
+    }
+    html.dark {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.24) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(139,92,246,.20) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.16) 0%, transparent 45%);
+      --bg-base: #0f0f23;
+      --card-bg: rgba(255,255,255,.065);
+      --card-border: rgba(255,255,255,.10);
+      --card-shadow: 0 8px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.30);
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0c0;
+      --text-muted: #606080;
+      --accent: #818cf8;
+      --divider: rgba(255,255,255,.07);
+      --tag-bg: rgba(129,140,248,.14);
+      --tag-border: rgba(129,140,248,.26);
+      --tag-text: #a5b4fc;
+      --good-bg: rgba(52,211,153,.10);
+      --good-border: rgba(52,211,153,.22);
+      --good-text: #6ee7b7;
+      --good-dot: #34d399;
+      --bad-bg: rgba(251,191,36,.10);
+      --bad-border: rgba(251,191,36,.22);
+      --bad-text: #fde68a;
+      --bad-dot: #fbbf24;
+      --feat-bg: rgba(129,140,248,.06);
+      --feat-border: rgba(129,140,248,.15);
+      --toggle-bg: rgba(255,255,255,.08);
+      --toggle-border: rgba(255,255,255,.13);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.40);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; transition: color .32s, background-color .32s, border-color .32s; }
+    html { min-height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      background: var(--bg-a), var(--bg-b), var(--bg-c), var(--bg-base);
+      background-attachment: fixed;
+      padding: 20px 20px 48px;
+      color: var(--text-primary);
+    }
+
+    /* ── 토글 ── */
+    .theme-toggle {
+      position: fixed; top: 20px; right: 20px;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--toggle-shadow);
+      font-size: 22px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      transition: transform .22s, box-shadow .22s, background-color .32s, border-color .32s !important;
+    }
+    .theme-toggle:hover { transform: scale(1.14) rotate(14deg); }
+
+    /* ── 레이아웃 ── */
+    .page { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+    /* ── 헤더 카드 ── */
+    .hero-card {
+      background: linear-gradient(135deg, #4361ee 0%, #7c3aed 58%, #06b6d4 100%);
+      border-radius: 22px;
+      padding: 28px 32px;
+      box-shadow: 0 8px 40px rgba(67,97,238,.35);
+      color: #fff;
+    }
+    .hero-meta { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; opacity: .75; margin-bottom: 10px; }
+    .hero-title { font-size: 28px; font-weight: 900; letter-spacing: -.5px; margin-bottom: 6px; }
+    .hero-url { font-size: 14px; opacity: .8; text-decoration: none; color: #fff; }
+    .hero-url:hover { opacity: 1; }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .hero-chip { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.28); padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+
+    /* ── 일반 카드 ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 22px;
+      padding: 24px 28px;
+      box-shadow: var(--card-shadow);
+    }
+    .card-title {
+      font-size: 15px; font-weight: 900; color: var(--text-primary);
+      margin-bottom: 18px; letter-spacing: -.2px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title::after { content: ''; flex: 1; height: 1px; background: var(--divider); }
+
+    /* ── 2컬럼 그리드 ── */
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* ── 구조 아이템 ── */
+    .struct-list { display: flex; flex-direction: column; gap: 10px; }
+    .struct-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px;
+      background: var(--feat-bg);
+      border: 1px solid var(--feat-border);
+      border-radius: 12px;
+    }
+    .struct-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 10px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .struct-name { font-size: 13px; font-weight: 800; color: var(--text-primary); margin-bottom: 3px; }
+    .struct-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── 기능 뱃지 ── */
+    .feat-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+    .feat-item {
+      background: var(--feat-bg);
+      border: 1px solid var(--feat-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 13px; color: var(--text-secondary);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .feat-item .icon { font-size: 18px; }
+    .feat-item .label { font-weight: 700; color: var(--text-primary); }
+
+    /* ── 잘한점 / 개선점 ── */
+    .eval-list { display: flex; flex-direction: column; gap: 10px; }
+    .eval-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 16px;
+      border-radius: 12px;
+      border: 1px solid;
+    }
+    .eval-item.good { background: var(--good-bg); border-color: var(--good-border); }
+    .eval-item.bad  { background: var(--bad-bg);  border-color: var(--bad-border);  }
+    .eval-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .eval-item.good .eval-dot { background: var(--good-dot); }
+    .eval-item.bad  .eval-dot { background: var(--bad-dot);  }
+    .eval-title { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+    .eval-item.good .eval-title { color: var(--good-text); }
+    .eval-item.bad  .eval-title { color: var(--bad-text);  }
+    .eval-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+
+    /* ── 디자인 분석 ── */
+    .design-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .design-card {
+      background: var(--feat-bg);
+      border: 1px solid var(--feat-border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .design-icon { font-size: 26px; margin-bottom: 8px; }
+    .design-label { font-size: 13px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px; }
+    .design-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── 종합 점수 ── */
+    .score-row { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--divider); }
+    .score-row:last-child { border-bottom: none; }
+    .score-label { flex: 1; font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+    .score-bar-bg { flex: 2; height: 8px; background: var(--divider); border-radius: 99px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 99px; }
+    .score-num { font-size: 13px; font-weight: 900; color: var(--text-primary); width: 32px; text-align: right; }
+
+    /* ── 네비게이션 탭 ── */
+    .nav-tabs {
+      display: flex; gap: 5px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 18px; padding: 7px;
+      box-shadow: var(--card-shadow); overflow-x: auto; scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 12px; text-decoration: none;
+      font-size: 13px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap; flex-shrink: 0;
+      transition: background-color .2s, color .2s, box-shadow .2s !important;
+    }
+    .nav-tab:hover { background: rgba(67,97,238,.08); color: var(--accent); }
+    .nav-tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(67,97,238,.32); }
+    html.dark .nav-tab.active { box-shadow: 0 4px 14px rgba(129,140,248,.28); }
+  </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" title="다크/라이트 모드">🌙</button>
+
+<div class="page">
+
+  <nav class="nav-tabs">
+    <a href="dashboard.html" class="nav-tab">📊 대시보드</a>
+    <a href="meeting-result.html" class="nav-tab">📝 회의록</a>
+    <a href="chart.html" class="nav-tab">📈 매출 현황</a>
+    <a href="diagram.html" class="nav-tab">🔄 업무 프로세스</a>
+    <a href="report.html" class="nav-tab active">🔍 사이트 분석</a>
+  </nav>
+
+  <!-- ── 헤더 ── -->
+  <div class="hero-card">
+    <div class="hero-meta">🔍 사이트 분석 리포트 · 2026년 6월 직접 방문</div>
+    <div class="hero-title">SubTrackr (subtrac.kr)</div>
+    <a href="https://www.subtrac.kr/" class="hero-url" target="_blank">https://www.subtrac.kr/ ↗</a>
+    <div class="hero-chips">
+      <span class="hero-chip">구독 관리 앱</span>
+      <span class="hero-chip">AI 기반</span>
+      <span class="hero-chip">무료 · 광고 운영</span>
+      <span class="hero-chip">은행 연동 불필요</span>
+      <span class="hero-chip">130+ 서비스</span>
+      <span class="hero-chip">11개 언어</span>
+      <span class="hero-chip">주식회사 헬로브이알</span>
+    </div>
+  </div>
+
+  <!-- ── 사이트 구조 ── -->
+  <div class="card">
+    <div class="card-title">🗂 사이트 구조</div>
+    <div class="struct-list">
+      <div class="struct-item">
+        <div class="struct-num">1</div>
+        <div>
+          <div class="struct-name">히어로 섹션</div>
+          <div class="struct-desc">「은행 연동 없이. 가입 없이. 바로 시작.」 핵심 가치를 즉시 전달. 스크린샷 한 장으로 AI 자동 감지 강조.</div>
+        </div>
+      </div>
+      <div class="struct-item">
+        <div class="struct-num">2</div>
+        <div>
+          <div class="struct-name">대시보드 (메인 기능)</div>
+          <div class="struct-desc">월간 지출(₩78,557) · 연간 환산(₩942,679 / $1,541) · 활성 구독 수 · 다음 결제일 · 절약 팁 카드 4개 구성.</div>
+        </div>
+      </div>
+      <div class="struct-item">
+        <div class="struct-num">3</div>
+        <div>
+          <div class="struct-name">내 구독 목록</div>
+          <div class="struct-desc">엔터테인먼트 / 음악 / 생산성 / AI도구 / 클라우드 / 개발 / 쇼핑 / 기타 카테고리 필터. 캘린더 뷰(월간) 병행 제공.</div>
+        </div>
+      </div>
+      <div class="struct-item">
+        <div class="struct-num">4</div>
+        <div>
+          <div class="struct-name">빠른 추가</div>
+          <div class="struct-desc">Netflix · YouTube Premium · Disney+ · Apple TV+ · HBO Max 등 인기 서비스 원클릭 추가. 전체 서비스 목록 별도 제공.</div>
+        </div>
+      </div>
+      <div class="struct-item">
+        <div class="struct-num">5</div>
+        <div>
+          <div class="struct-name">계정 & 카드 관리 / 백업</div>
+          <div class="struct-desc">계정·카드별 구독 분류. JSON/CSV 내보내기 + 가져오기(데이터 합치기 / 전체 교체 2가지 모드) 지원.</div>
+        </div>
+      </div>
+      <div class="struct-item">
+        <div class="struct-num">6</div>
+        <div>
+          <div class="struct-name">블로그 (SEO 콘텐츠)</div>
+          <div class="struct-desc">구독료 절약법 · Netflix 해지법 · ChatGPT vs Claude 비교 · 스트리밍 서비스 비교 등 검색 유입형 콘텐츠 운영.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 디자인 분석 ── -->
+  <div class="card">
+    <div class="card-title">🎨 디자인 분석</div>
+    <div class="design-grid">
+      <div class="design-card">
+        <div class="design-icon">📱</div>
+        <div class="design-label">앱형 UI</div>
+        <div class="design-desc">웹이지만 네이티브 앱처럼 느껴지는 카드 기반 대시보드 레이아웃.</div>
+      </div>
+      <div class="design-card">
+        <div class="design-icon">🎯</div>
+        <div class="design-label">명확한 계층구조</div>
+        <div class="design-desc">숫자(지출)를 크게, 라벨을 작게 배치해 핵심 정보 즉시 파악 가능.</div>
+      </div>
+      <div class="design-card">
+        <div class="design-icon">🌏</div>
+        <div class="design-label">이중 통화 표시</div>
+        <div class="design-desc">₩과 $를 동시 표시(₩942,679 / $1,541). 글로벌 서비스 혼용 유저 배려.</div>
+      </div>
+      <div class="design-card">
+        <div class="design-icon">🏷</div>
+        <div class="design-label">D-day 라벨</div>
+        <div class="design-desc">각 구독에 D-10, D-23 등 다음 결제까지 남은 일수 표시. 직관적.</div>
+      </div>
+      <div class="design-card">
+        <div class="design-icon">📅</div>
+        <div class="design-label">캘린더 통합</div>
+        <div class="design-desc">월간 캘린더에 결제일 표시. 구독 관리를 시간축으로 파악 가능.</div>
+      </div>
+      <div class="design-card">
+        <div class="design-icon">⚡</div>
+        <div class="design-label">즉시 사용 경험</div>
+        <div class="design-label" style="margin-top:4px;font-weight:400;font-size:12px;color:var(--text-secondary);">로그인 없이도 대시보드가 바로 작동. 가입 장벽 제거.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 주요 기능 ── -->
+  <div class="card">
+    <div class="card-title">⚙️ 주요 기능</div>
+    <div class="feat-grid">
+      <div class="feat-item"><span class="icon">🤖</span><div><div class="label">AI 자동 감지</div>영수증·스크린샷 업로드 → 구독 자동 추출 (무료 10회/일)</div></div>
+      <div class="feat-item"><span class="icon">📊</span><div><div class="label">지출 통계</div>월간·연간 합계, 카테고리별 분류, 달러 환산</div></div>
+      <div class="feat-item"><span class="icon">🔔</span><div><div class="label">결제 D-day</div>각 구독의 다음 결제일까지 남은 일수 표시</div></div>
+      <div class="feat-item"><span class="icon">📅</span><div><div class="label">캘린더 뷰</div>월간 캘린더로 결제 일정 한눈에 확인</div></div>
+      <div class="feat-item"><span class="icon">⚡</span><div><div class="label">빠른 추가</div>130+ 서비스 DB에서 원클릭 등록</div></div>
+      <div class="feat-item"><span class="icon">💳</span><div><div class="label">카드별 분류</div>계정·카드 단위로 구독 그룹화</div></div>
+      <div class="feat-item"><span class="icon">💾</span><div><div class="label">JSON/CSV 백업</div>데이터 내보내기·가져오기, 로컬 저장</div></div>
+      <div class="feat-item"><span class="icon">🌐</span><div><div class="label">11개 언어</div>글로벌 서비스 지원, 다통화 자동 인식</div></div>
+      <div class="feat-item"><span class="icon">💡</span><div><div class="label">절약 팁</div>연간 결제 전환 시 예상 절약액 자동 계산</div></div>
+    </div>
+  </div>
+
+  <!-- ── 잘한점 / 개선점 2컬럼 ── -->
+  <div class="grid2">
+
+    <!-- 잘한점 -->
+    <div class="card">
+      <div class="card-title">✅ 잘한 점</div>
+      <div class="eval-list">
+        <div class="eval-item good">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">강력한 차별화: 은행 연동 불필요</div>
+            <div class="eval-desc">한국에서 금융 데이터 연동에 대한 거부감이 크다. "데이터는 기기에 저장"이라는 프라이버시 우선 접근은 핵심 경쟁력.</div>
+          </div>
+        </div>
+        <div class="eval-item good">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">즉시 시작 — 가입 없이</div>
+            <div class="eval-desc">회원가입 없이 대시보드를 바로 사용. 첫 마찰을 완전히 제거해 전환율을 높이는 전략.</div>
+          </div>
+        </div>
+        <div class="eval-item good">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">AI 스크린샷 감지 — 실용적 혁신</div>
+            <div class="eval-desc">영수증 하나 올리면 구독을 자동 인식. 가장 귀찮은 등록 과정을 AI로 해결한 UX 핵심 포인트.</div>
+          </div>
+        </div>
+        <div class="eval-item good">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">SEO 블로그 전략 탁월</div>
+            <div class="eval-desc">「Netflix 해지법」「ChatGPT vs Claude」등 검색 수요가 높은 키워드로 콘텐츠를 구성. 유기 트래픽 유입 설계 우수.</div>
+          </div>
+        </div>
+        <div class="eval-item good">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">D-day + 캘린더 조합</div>
+            <div class="eval-desc">각 구독에 D-10 · D-23 표시 + 월간 캘린더로 결제 일정을 이중으로 파악 가능. 실용적 UX.</div>
+          </div>
+        </div>
+        <div class="eval-item good">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">완전 무료 모델</div>
+            <div class="eval-desc">모든 기능이 무료(광고 운영). 구독 관리 앱에 돈을 쓰고 싶지 않은 타겟 심리와 정확히 일치.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 개선점 -->
+    <div class="card">
+      <div class="card-title">⚠️ 개선점</div>
+      <div class="eval-list">
+        <div class="eval-item bad">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">로컬 저장 → 데이터 소실 위험</div>
+            <div class="eval-desc">기기 교체·브라우저 캐시 삭제 시 모든 구독 데이터가 사라짐. 클라우드 동기(선택 opt-in) 옵션 필요.</div>
+          </div>
+        </div>
+        <div class="eval-item bad">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">소셜 프루프 전무</div>
+            <div class="eval-desc">홈에 사용자 수·리뷰·별점이 전혀 없음. 신규 방문자 신뢰 형성 어려움. 간단한 숫자라도 표기 권장.</div>
+          </div>
+        </div>
+        <div class="eval-item bad">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">블로그가 랜딩페이지를 침식</div>
+            <div class="eval-desc">홈 하단에 블로그 글 전체가 펼쳐짐. 앱 전환에 집중해야 할 페이지가 콘텐츠 페이지처럼 보임.</div>
+          </div>
+        </div>
+        <div class="eval-item bad">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">회사명과 서비스 간 톤 불일치</div>
+            <div class="eval-desc">운영사명 「주식회사 헬로브이알」은 VR 기업 이미지. 금융·구독 관리 앱의 신뢰성과 미스매치가 발생할 수 있음.</div>
+          </div>
+        </div>
+        <div class="eval-item bad">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">AI 감지 무료 10회/일 한계</div>
+            <div class="eval-desc">핵심 기능에 일 10회 제한. 첫 셋업 시 대량 스크린샷 처리가 필요한데 제한에 걸릴 수 있음.</div>
+          </div>
+        </div>
+        <div class="eval-item bad">
+          <div class="eval-dot"></div>
+          <div>
+            <div class="eval-title">Copyright 연도 불일치</div>
+            <div class="eval-desc">푸터에 「© 2025」지만 블로그 글은 2026년 4월 작성. 세부 디테일 미완성으로 신뢰도 소폭 하락.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /grid2 -->
+
+  <!-- ── 종합 점수 ── -->
+  <div class="card">
+    <div class="card-title">📈 종합 평가</div>
+    <div class="score-row">
+      <span class="score-label">핵심 아이디어 / 차별화</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:92%;background:linear-gradient(90deg,#10b981,#34d399);"></div></div>
+      <span class="score-num">9.2</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">UI / UX 완성도</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:78%;background:linear-gradient(90deg,#4361ee,#818cf8);"></div></div>
+      <span class="score-num">7.8</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">SEO / 콘텐츠 전략</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:85%;background:linear-gradient(90deg,#6366f1,#a78bfa);"></div></div>
+      <span class="score-num">8.5</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">신뢰성 / 안정감</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:62%;background:linear-gradient(90deg,#f59e0b,#fcd34d);"></div></div>
+      <span class="score-num">6.2</span>
+    </div>
+    <div class="score-row">
+      <span class="score-label">기능 완성도</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:80%;background:linear-gradient(90deg,#3b82f6,#60a5fa);"></div></div>
+      <span class="score-num">8.0</span>
+    </div>
+    <div class="score-row" style="margin-top:8px;padding-top:16px;border-top:1px solid var(--divider);border-bottom:none;">
+      <span class="score-label" style="font-weight:900;font-size:14px;color:var(--text-primary);">종합</span>
+      <div class="score-bar-bg"><div class="score-bar-fill" style="width:79%;background:linear-gradient(90deg,#4361ee,#7c3aed,#06b6d4);"></div></div>
+      <span class="score-num" style="font-size:15px;color:var(--accent);">7.9</span>
+    </div>
+  </div>
+
+  <!-- ── 한 줄 총평 ── -->
+  <div class="card" style="background:linear-gradient(135deg,rgba(67,97,238,.10),rgba(124,58,237,.08));border-color:rgba(67,97,238,.20);">
+    <div class="card-title">💬 총평</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.75;">
+      <strong style="color:var(--text-primary);">「은행 연동 없이 AI로 구독을 관리」</strong>라는 아이디어 자체는 한국 시장에서 매우 날카롭습니다.
+      가입 없이 즉시 사용 가능한 구조, AI 스크린샷 감지, SEO 블로그 전략 모두 초기 스타트업치고 완성도가 높습니다.
+      다만 <strong style="color:var(--text-primary);">로컬 저장에 따른 데이터 손실 위험</strong>과
+      <strong style="color:var(--text-primary);">소셜 프루프 부재</strong>는 신규 사용자의 장기 신뢰를 저해하는 요소입니다.
+      클라우드 선택 동기화 + 간단한 사용자 지표 노출만으로도 신뢰도가 크게 올라갈 것입니다.
+    </p>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+  const html = document.documentElement;
+  const btn  = document.getElementById('themeToggle');
+  function applyTheme(dark) { html.classList.toggle('dark', dark); btn.textContent = dark ? '☀️' : '🌙'; }
+  applyTheme(localStorage.getItem('theme') === 'dark');
+  btn.addEventListener('click', () => {
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    btn.textContent = isDark ? '☀️' : '🌙';
+  });
+</script>
+</body>
+</html>

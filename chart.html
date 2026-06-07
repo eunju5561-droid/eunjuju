@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>매출 차트 · 김비서</title>
+  <script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark');</script>
+  <style>
+    :root {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.22) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(167,139,250,.18) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.14) 0%, transparent 45%);
+      --bg-base: linear-gradient(145deg,#e8edff 0%,#ede8ff 50%,#e4f0ff 100%);
+      --card-bg: rgba(255,255,255,.70);
+      --card-border: rgba(255,255,255,.60);
+      --card-shadow: 0 8px 32px rgba(67,97,238,.12), 0 2px 8px rgba(67,97,238,.07);
+      --text-primary: #1a1a2e;
+      --text-secondary: #4a4a6a;
+      --text-muted: #8080a0;
+      --accent: #4361ee;
+      --stat-bg: rgba(67,97,238,.05);
+      --stat-border: rgba(67,97,238,.12);
+      --toggle-bg: rgba(255,255,255,.78);
+      --toggle-border: rgba(255,255,255,.65);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.10);
+      --back-bg: rgba(255,255,255,.72);
+      --back-border: rgba(255,255,255,.58);
+      --back-text: #4361ee;
+    }
+    html.dark {
+      --bg-a: radial-gradient(ellipse at 18% 38%, rgba(99,102,241,.24) 0%, transparent 55%);
+      --bg-b: radial-gradient(ellipse at 82% 14%, rgba(139,92,246,.20) 0%, transparent 50%);
+      --bg-c: radial-gradient(ellipse at 58% 88%, rgba(59,130,246,.16) 0%, transparent 45%);
+      --bg-base: #0f0f23;
+      --card-bg: rgba(255,255,255,.065);
+      --card-border: rgba(255,255,255,.10);
+      --card-shadow: 0 8px 32px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.30);
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0c0;
+      --text-muted: #606080;
+      --accent: #818cf8;
+      --stat-bg: rgba(129,140,248,.07);
+      --stat-border: rgba(129,140,248,.18);
+      --toggle-bg: rgba(255,255,255,.08);
+      --toggle-border: rgba(255,255,255,.13);
+      --toggle-shadow: 0 4px 18px rgba(0,0,0,.40);
+      --back-bg: rgba(255,255,255,.07);
+      --back-border: rgba(255,255,255,.11);
+      --back-text: #818cf8;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      transition: color .32s, background-color .32s, border-color .32s;
+    }
+    html { min-height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      background: var(--bg-a), var(--bg-b), var(--bg-c), var(--bg-base);
+      background-attachment: fixed;
+      padding: 20px 20px 40px;
+      color: var(--text-primary);
+    }
+
+    /* ── 토글 ── */
+    .theme-toggle {
+      position: fixed; top: 20px; right: 20px;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      box-shadow: var(--toggle-shadow);
+      font-size: 22px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      transition: transform .22s, box-shadow .22s, background-color .32s, border-color .32s !important;
+    }
+    .theme-toggle:hover { transform: scale(1.14) rotate(14deg); }
+
+    /* ── 페이지 래퍼 ── */
+    .page { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+    /* ── 헤더 ── */
+    header {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 18px; padding: 14px 20px;
+      box-shadow: var(--card-shadow);
+      padding-right: 76px;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--back-text); text-decoration: none;
+      font-size: 13px; font-weight: 700;
+      background: var(--back-bg); border: 1px solid var(--back-border);
+      padding: 8px 14px; border-radius: 10px;
+      white-space: nowrap;
+    }
+    .back-link:hover { opacity: .8; }
+    header h1 { font-size: 20px; font-weight: 900; letter-spacing: -.4px; color: var(--text-primary); }
+    header .sub { margin-left: auto; font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+    /* ── 요약 카드 ── */
+    .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .stat-card {
+      background: var(--stat-bg);
+      border: 1px solid var(--stat-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px; padding: 18px 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .stat-card.accent {
+      background: linear-gradient(135deg,#4361ee 0%,#7c3aed 58%,#00b894 100%);
+      border: none;
+      box-shadow: 0 6px 24px rgba(67,97,238,.32);
+    }
+    .stat-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .stat-card.accent .stat-label { color: rgba(255,255,255,.75); }
+    .stat-value { font-size: 20px; font-weight: 900; color: var(--text-primary); letter-spacing: -.5px; }
+    .stat-card.accent .stat-value { color: #fff; }
+    .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .stat-card.accent .stat-sub { color: rgba(255,255,255,.65); }
+
+    /* ── 차트 카드 ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 22px; padding: 22px 24px;
+      box-shadow: var(--card-shadow);
+    }
+    .card-title {
+      font-size: 14px; font-weight: 900; color: var(--text-primary);
+      margin-bottom: 18px; letter-spacing: -.2px;
+    }
+
+    /* ── 캔버스 & 툴팁 ── */
+    .chart-wrap { position: relative; }
+    canvas { display: block; width: 100%; }
+
+    .tooltip {
+      position: absolute;
+      background: rgba(26,26,46,.88);
+      color: #fff;
+      font-size: 12px; font-weight: 600;
+      padding: 7px 12px; border-radius: 8px;
+      pointer-events: none; opacity: 0;
+      transition: opacity .15s;
+      white-space: nowrap; z-index: 10;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    }
+    html.dark .tooltip { background: rgba(200,200,255,.15); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.12); }
+
+    /* ── 범례 ── */
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px 20px;
+      margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(0,0,0,.07);
+    }
+    html.dark .legend { border-top-color: rgba(255,255,255,.07); }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-secondary); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── 네비게이션 탭 ── */
+    .nav-tabs {
+      display: flex; gap: 5px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px) saturate(200%); -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border-radius: 18px; padding: 7px;
+      box-shadow: var(--card-shadow); overflow-x: auto; scrollbar-width: none;
+    }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 9px 16px; border-radius: 12px; text-decoration: none;
+      font-size: 13px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap; flex-shrink: 0;
+      transition: background-color .2s, color .2s, box-shadow .2s !important;
+    }
+    .nav-tab:hover { background: rgba(67,97,238,.08); color: var(--accent); }
+    .nav-tab.active { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(67,97,238,.32); }
+    html.dark .nav-tab.active { box-shadow: 0 4px 14px rgba(129,140,248,.28); }
+  </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" title="다크/라이트 모드">🌙</button>
+
+<div class="page">
+
+  <!-- 헤더 -->
+  <header>
+    <a href="dashboard.html" class="back-link">← 대시보드</a>
+    <h1>📈 매출 차트</h1>
+    <span class="sub">매출데이터.csv · 2026년 1~2월</span>
+  </header>
+
+  <nav class="nav-tabs">
+    <a href="dashboard.html" class="nav-tab">📊 대시보드</a>
+    <a href="meeting-result.html" class="nav-tab">📝 회의록</a>
+    <a href="chart.html" class="nav-tab active">📈 매출 현황</a>
+    <a href="diagram.html" class="nav-tab">🔄 업무 프로세스</a>
+    <a href="report.html" class="nav-tab">🔍 사이트 분석</a>
+  </nav>
+
+  <!-- 요약 수치 -->
+  <div class="stats">
+    <div class="stat-card accent">
+      <div class="stat-label">총 누적 매출</div>
+      <div class="stat-value">71,006,000원</div>
+      <div class="stat-sub">30건 거래</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">1월 매출</div>
+      <div class="stat-value">46,499,000원</div>
+      <div class="stat-sub">21건 거래</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">2월 매출</div>
+      <div class="stat-value">24,507,000원</div>
+      <div class="stat-sub">9건 거래</div>
+    </div>
+  </div>
+
+  <!-- 선 그래프 -->
+  <div class="card">
+    <div class="card-title">📈 날짜별 매출 추이</div>
+    <div class="chart-wrap">
+      <canvas id="lineCanvas"></canvas>
+      <div class="tooltip" id="lineTip"></div>
+    </div>
+  </div>
+
+  <!-- 막대 그래프 -->
+  <div class="card">
+    <div class="card-title">📊 제품별 매출 비교</div>
+    <div class="chart-wrap">
+      <canvas id="barCanvas"></canvas>
+      <div class="tooltip" id="barTip"></div>
+    </div>
+    <div class="legend" id="barLegend"></div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ══════════════════════════════════════
+   데이터
+══════════════════════════════════════ */
+const dateData = [
+  { label:'1/05', total:7075000  },
+  { label:'1/08', total:8413000  },
+  { label:'1/12', total:4135000  },
+  { label:'1/15', total:8122000  },
+  { label:'1/19', total:5060000  },
+  { label:'1/22', total:9029000  },
+  { label:'1/26', total:4665000  },
+  { label:'2/01', total:10110000 },
+  { label:'2/05', total:6195000  },
+  { label:'2/10', total:8202000  },
+];
+
+const productData = [
+  { name:'무선 이어폰',    total:28836000, color:'#4361ee' },
+  { name:'텀블러',         total:11525000, color:'#00b894' },
+  { name:'블루투스 스피커', total:9600000,  color:'#3b82f6' },
+  { name:'보조배터리',      total:9030000,  color:'#6c81f5' },
+  { name:'에코백',          total:6165000,  color:'#34d399' },
+  { name:'무선 충전기',     total:5850000,  color:'#60a5fa' },
+];
+
+/* ══════════════════════════════════════
+   헬퍼
+══════════════════════════════════════ */
+function fmt(n) { return n.toLocaleString('ko-KR'); }
+
+function fmtAxis(n) {
+  if (n === 0) return '0';
+  const man = n / 10000;
+  return man.toLocaleString('ko-KR') + '만';
+}
+
+function getTheme() {
+  const dark = document.documentElement.classList.contains('dark');
+  return {
+    dark,
+    text:      dark ? '#c0c0d8' : '#1a1a2e',
+    textDim:   dark ? '#606080' : '#8888aa',
+    grid:      dark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)',
+    dotBorder: dark ? '#1a1a3e' : '#ffffff',
+  };
+}
+
+function setupCanvas(canvas, height) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w   = canvas.parentElement.clientWidth;
+  const h   = height;
+  canvas.width  = Math.round(w * dpr);
+  canvas.height = Math.round(h * dpr);
+  canvas.style.width  = w + 'px';
+  canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w, h };
+}
+
+function fillRoundedTop(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+/* ══════════════════════════════════════
+   선 그래프
+══════════════════════════════════════ */
+const lineCanvas = document.getElementById('lineCanvas');
+const lineTip    = document.getElementById('lineTip');
+let   linePts    = [];
+
+function drawLine() {
+  const { ctx, w, h } = setupCanvas(lineCanvas, 300);
+  const pad = { t:24, r:24, b:44, l:76 };
+  const cw  = w - pad.l - pad.r;
+  const ch  = h - pad.t - pad.b;
+  const T   = getTheme();
+
+  const YMAX  = 12000000;
+  const YSTEP = 2000000;
+  const YCOUNT = YMAX / YSTEP;
+
+  ctx.clearRect(0, 0, w, h);
+
+  /* 수평 그리드 + Y 라벨 */
+  ctx.setLineDash([4, 5]);
+  for (let i = 0; i <= YCOUNT; i++) {
+    const val = YSTEP * i;
+    const y   = pad.t + ch - (val / YMAX) * ch;
+    ctx.strokeStyle = T.grid;
+    ctx.lineWidth   = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
+    ctx.fillStyle   = T.textDim;
+    ctx.font        = '11px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.textAlign   = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(fmtAxis(val), pad.l - 8, y);
+  }
+  ctx.setLineDash([]);
+
+  /* 포인트 좌표 계산 */
+  linePts = dateData.map((d, i) => ({
+    x: pad.l + (i / (dateData.length - 1)) * cw,
+    y: pad.t + ch - (d.total / YMAX) * ch,
+    label: d.label,
+    total: d.total,
+  }));
+
+  /* X 라벨 */
+  linePts.forEach(p => {
+    ctx.fillStyle    = T.textDim;
+    ctx.font         = '11px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(p.label, p.x, pad.t + ch + 10);
+  });
+
+  /* 면적 채우기 */
+  const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + ch);
+  grad.addColorStop(0, T.dark ? 'rgba(67,97,238,.30)' : 'rgba(67,97,238,.22)');
+  grad.addColorStop(1, 'rgba(67,97,238,0)');
+
+  ctx.beginPath();
+  ctx.moveTo(linePts[0].x, pad.t + ch);
+  ctx.lineTo(linePts[0].x, linePts[0].y);
+  for (let i = 1; i < linePts.length; i++) {
+    const cp = (linePts[i-1].x + linePts[i].x) / 2;
+    ctx.bezierCurveTo(cp, linePts[i-1].y, cp, linePts[i].y, linePts[i].x, linePts[i].y);
+  }
+  ctx.lineTo(linePts[linePts.length-1].x, pad.t + ch);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  /* 선 */
+  ctx.beginPath();
+  ctx.moveTo(linePts[0].x, linePts[0].y);
+  for (let i = 1; i < linePts.length; i++) {
+    const cp = (linePts[i-1].x + linePts[i].x) / 2;
+    ctx.bezierCurveTo(cp, linePts[i-1].y, cp, linePts[i].y, linePts[i].x, linePts[i].y);
+  }
+  ctx.strokeStyle = '#4361ee';
+  ctx.lineWidth   = 2.5;
+  ctx.lineJoin    = 'round';
+  ctx.stroke();
+
+  /* 점 */
+  linePts.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#4361ee';
+    ctx.fill();
+    ctx.strokeStyle = T.dotBorder;
+    ctx.lineWidth   = 2.5;
+    ctx.stroke();
+  });
+}
+
+/* 선 그래프 툴팁 */
+lineCanvas.addEventListener('mousemove', e => {
+  const r = lineCanvas.getBoundingClientRect();
+  const mx = e.clientX - r.left;
+  const my = e.clientY - r.top;
+  let best = null, bestD = Infinity;
+  linePts.forEach(p => {
+    const d = Math.hypot(mx - p.x, my - p.y);
+    if (d < bestD) { bestD = d; best = p; }
+  });
+  if (best && bestD < 32) {
+    lineTip.textContent = `${best.label}  ${fmt(best.total)}원`;
+    const tx = Math.min(best.x + 12, lineCanvas.offsetWidth - 140);
+    lineTip.style.left    = tx + 'px';
+    lineTip.style.top     = (best.y - 36) + 'px';
+    lineTip.style.opacity = '1';
+  } else {
+    lineTip.style.opacity = '0';
+  }
+});
+lineCanvas.addEventListener('mouseleave', () => { lineTip.style.opacity = '0'; });
+
+/* ══════════════════════════════════════
+   막대 그래프
+══════════════════════════════════════ */
+const barCanvas = document.getElementById('barCanvas');
+const barTip    = document.getElementById('barTip');
+let   barRects  = [];
+
+function drawBar() {
+  const { ctx, w, h } = setupCanvas(barCanvas, 320);
+  const pad = { t:32, r:24, b:64, l:76 };
+  const cw  = w - pad.l - pad.r;
+  const ch  = h - pad.t - pad.b;
+  const T   = getTheme();
+
+  const YMAX  = 32000000;
+  const YSTEP = 8000000;
+  const YCOUNT = YMAX / YSTEP; // 4 steps
+
+  ctx.clearRect(0, 0, w, h);
+
+  /* 그리드 + Y 라벨 */
+  ctx.setLineDash([4, 5]);
+  for (let i = 0; i <= YCOUNT; i++) {
+    const val = YSTEP * i;
+    const y   = pad.t + ch - (val / YMAX) * ch;
+    ctx.strokeStyle = T.grid;
+    ctx.lineWidth   = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
+    ctx.fillStyle    = T.textDim;
+    ctx.font         = '11px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.textAlign    = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(fmtAxis(val), pad.l - 8, y);
+  }
+  ctx.setLineDash([]);
+
+  const n      = productData.length;
+  const slotW  = cw / n;
+  const barW   = slotW * 0.58;
+  const offset = (slotW - barW) / 2;
+
+  barRects = [];
+
+  productData.forEach((p, i) => {
+    const barH  = (p.total / YMAX) * ch;
+    const bx    = pad.l + slotW * i + offset;
+    const by    = pad.t + ch - barH;
+    const cx    = bx + barW / 2;
+
+    /* 막대 그라디언트 */
+    const g = ctx.createLinearGradient(0, by, 0, by + barH);
+    g.addColorStop(0, p.color);
+    g.addColorStop(1, p.color + '66');
+    ctx.fillStyle = g;
+    fillRoundedTop(ctx, bx, by, barW, barH, 6);
+    ctx.fill();
+
+    /* 수치 라벨 (막대 위) */
+    ctx.fillStyle    = T.text;
+    ctx.font         = 'bold 11px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(fmtAxis(p.total), cx, by - 4);
+
+    /* 제품명 (막대 아래) — 두 줄 처리 */
+    const parts = p.name.split(' ');
+    ctx.fillStyle    = T.textDim;
+    ctx.font         = '11px -apple-system,BlinkMacSystemFont,sans-serif';
+    ctx.textBaseline = 'top';
+    const nameY = pad.t + ch + 10;
+    if (parts.length === 1) {
+      ctx.fillText(parts[0], cx, nameY + 7);
+    } else {
+      ctx.fillText(parts[0], cx, nameY);
+      ctx.fillText(parts[1], cx, nameY + 14);
+    }
+
+    barRects.push({ x: bx, y: by, w: barW, h: barH, name: p.name, total: p.total, color: p.color });
+  });
+}
+
+/* 막대 툴팁 */
+barCanvas.addEventListener('mousemove', e => {
+  const r  = barCanvas.getBoundingClientRect();
+  const mx = e.clientX - r.left;
+  const my = e.clientY - r.top;
+  const hit = barRects.find(b => mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h);
+  if (hit) {
+    barTip.textContent = `${hit.name}  ${fmt(hit.total)}원`;
+    const tx = Math.min(hit.x + hit.w / 2 - 50, barCanvas.offsetWidth - 160);
+    barTip.style.left    = Math.max(0, tx) + 'px';
+    barTip.style.top     = (hit.y - 36) + 'px';
+    barTip.style.opacity = '1';
+  } else {
+    barTip.style.opacity = '0';
+  }
+});
+barCanvas.addEventListener('mouseleave', () => { barTip.style.opacity = '0'; });
+
+/* ══════════════════════════════════════
+   범례 빌드
+══════════════════════════════════════ */
+const legend = document.getElementById('barLegend');
+productData.forEach(p => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `<span class="legend-dot" style="background:${p.color};"></span>${p.name} <span style="margin-left:4px;font-weight:700;">${fmt(p.total)}원</span>`;
+  legend.appendChild(item);
+});
+
+/* ══════════════════════════════════════
+   테마 토글 + 전체 다시 그리기
+══════════════════════════════════════ */
+function drawAll() { drawLine(); drawBar(); }
+
+const html = document.documentElement;
+const btn  = document.getElementById('themeToggle');
+function applyTheme(dark) {
+  html.classList.toggle('dark', dark);
+  btn.textContent = dark ? '☀️' : '🌙';
+  drawAll();
+}
+applyTheme(localStorage.getItem('theme') === 'dark');
+btn.addEventListener('click', () => {
+  const isDark = html.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  btn.textContent = isDark ? '☀️' : '🌙';
+  drawAll();
+});
+
+/* 창 크기 변경 시 재렌더 */
+window.addEventListener('resize', drawAll);
+</script>
+</body>
+</html>
