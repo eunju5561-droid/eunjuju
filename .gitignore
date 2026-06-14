@@ -19,3 +19,18 @@ supabase-schema.sql
 
 # Supabase CLI 임시 파일
 supabase/.temp
+
+# Node.js
+node_modules/
+
+# Google OAuth 토큰 (민감 정보)
+.google-tokens.json
+
+# 로그인 세션 (로컬 전용)
+.sessions.json
+
+# 생성된 업무 데이터 (개인정보 — GitHub에 올리지 않음)
+brief.json
+analysis.json
+meeting-result.json
+calendar-data.json

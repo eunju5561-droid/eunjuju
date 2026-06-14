@@ -438,6 +438,78 @@
     .category-amount { font-weight: 800; color: var(--text-primary); font-size: 13px; }
     .category-pct    { font-size: 11px; color: var(--text-muted); }
 
+    /* ────────────────── 구글 캘린더 카드 ────────────────── */
+    .gcal-card { grid-column: span 2; }
+
+    .gcal-connect-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 24px 0 10px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .gcal-connect-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg,#4285f4,#34a853);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(66,133,244,.35);
+      transition: opacity .2s, transform .15s !important;
+    }
+    .gcal-connect-btn:hover { opacity: .88; }
+    .gcal-connect-btn:active { transform: scale(.97); }
+
+    .gcal-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+
+    .gcal-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: var(--todo-bg);
+      border: 1px solid transparent;
+      transition: border-color .2s !important;
+    }
+    .gcal-item:hover { border-color: var(--card-border); }
+
+    .gcal-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #4285f4;
+      flex-shrink: 0;
+      margin-top: 4px;
+    }
+
+    .gcal-info { flex: 1; min-width: 0; }
+    .gcal-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .gcal-time  { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .gcal-loc   { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+    .gcal-empty {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    @media (max-width: 639px) {
+      .gcal-item { padding: 8px 11px; gap: 10px; }
+      .gcal-title { font-size: 12px; }
+      .gcal-time, .gcal-loc { font-size: 10px; }
+    }
+
     /* ────────────────── 네비게이션 탭 ────────────────── */
     .nav-tabs {
       display: flex;
@@ -554,6 +626,220 @@
 
       /* 테마 토글 */
       .theme-toggle { width: 42px; height: 42px; font-size: 19px; top: 14px; right: 14px; }
+
+      /* AI 카드 */
+      .brief-body { font-size: 12.5px; }
+      .brief-meta { font-size: 10px; }
+      .brief-hist-sel { font-size: 11px; max-width: 118px; padding: 4px 8px; }
+      .brief-refresh-btn { font-size: 11px; padding: 5px 10px; }
+      .brief-collapse-btn { width: 26px; height: 26px; font-size: 12px; }
+      .brief-body h3 { font-size: 12.5px; }
+      .brief-body h4 { font-size: 12px; }
+      .brief-body table { font-size: 11px; }
+      .brief-body thead th { padding: 6px 8px; font-size: 10px; }
+      .brief-body tbody td { padding: 6px 8px; font-size: 11px; }
+      /* 챗 UI */
+      .chat-messages { max-height: 180px; }
+      .chat-msg { font-size: 12px; padding: 8px 11px; }
+      .chat-input-row { gap: 7px; }
+      .chat-input { font-size: 13px; }
+      .chat-send-btn { font-size: 12px; padding: 9px 14px; }
+    }
+
+    /* ═══════════════════════════════════════
+       AI 챗 UI
+    ═══════════════════════════════════════ */
+    .chat-messages {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 260px;
+      overflow-y: auto;
+      margin: 14px 0 12px;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+
+    .chat-msg {
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      white-space: pre-wrap;
+      max-width: 90%;
+    }
+
+    .chat-msg.user {
+      background: var(--accent);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+
+    .chat-msg.ai {
+      background: var(--todo-bg);
+      color: var(--text-secondary);
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+      border: 1px solid var(--card-border);
+    }
+
+    .chat-msg.loading {
+      background: var(--todo-bg);
+      color: var(--text-muted);
+      align-self: flex-start;
+      border: 1px solid var(--card-border);
+      font-style: italic;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      background: var(--todo-bg);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      min-height: 42px;
+      max-height: 120px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .chat-input:focus { border-color: var(--accent); }
+    .chat-input::placeholder { color: var(--text-muted); }
+
+    .chat-send-btn {
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: opacity .2s, transform .15s;
+    }
+    .chat-send-btn:hover { opacity: .88; }
+    .chat-send-btn:active { transform: scale(.96); }
+    .chat-send-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* ═══════════════════════════════════════
+       ⑤⑥⑦⑧ AI 카드 공통
+    ═══════════════════════════════════════ */
+    .brief-card { grid-column: span 2; }
+
+    .brief-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brief-controls {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .brief-hist-sel {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 9px;
+      border: 1px solid var(--card-border);
+      background: var(--back-bg);
+      color: var(--text-secondary);
+      cursor: pointer;
+      max-width: 158px;
+      outline: none;
+      transition: border-color .2s !important;
+    }
+    .brief-hist-sel:focus { border-color: var(--accent); }
+    .brief-hist-sel:empty { display: none; }
+
+    .brief-refresh-btn {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 13px;
+      border-radius: 9px;
+      border: 1px solid var(--card-border);
+      background: var(--back-bg);
+      color: var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color .2s, border-color .2s !important;
+    }
+    .brief-refresh-btn:hover { background: var(--back-hover); }
+
+    .brief-collapse-btn {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: var(--back-bg);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform .28s cubic-bezier(.4,0,.2,1), background-color .2s !important;
+    }
+    .brief-collapse-btn:hover { background: var(--back-hover); }
+    .brief-collapse-btn.collapsed { transform: rotate(-90deg); }
+
+    .brief-content {
+      overflow: hidden;
+      max-height: 4000px;
+      opacity: 1;
+      transition: max-height .38s cubic-bezier(.4,0,.2,1), opacity .3s !important;
+    }
+    .brief-content.collapsed { max-height: 0 !important; opacity: 0; }
+
+    /* ─ 마크다운 렌더링 ─ */
+    .brief-body {
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--text-secondary);
+      margin-top: 14px;
+      min-height: 40px;
+    }
+    .brief-body h2 { font-size: 15px; font-weight: 900; color: var(--text-primary); margin: 14px 0 7px; }
+    .brief-body h3 { font-size: 14px; font-weight: 900; color: var(--text-primary); margin: 12px 0 6px; }
+    .brief-body h4 { font-size: 13px; font-weight: 800; color: var(--accent); margin: 10px 0 5px; }
+    .brief-body hr { border: none; border-top: 1px solid var(--table-border); margin: 10px 0; }
+    .brief-body strong { font-weight: 800; color: var(--text-primary); }
+    .brief-body em { font-style: italic; }
+    .brief-body code { background: var(--todo-bg); padding: 1px 6px; border-radius: 5px; font-size: .88em; font-family: monospace; }
+    .brief-body p { margin: 3px 0; }
+    .brief-body ul { padding-left: 20px; margin: 5px 0; list-style: disc; }
+    .brief-body ol { padding-left: 20px; margin: 5px 0; list-style: decimal; }
+    .brief-body li { margin: 3px 0; }
+    .brief-body .bsp { height: 5px; }
+    .brief-body table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; border-radius: 10px; overflow: hidden; }
+    .brief-body thead th { background: var(--table-th-bg); color: var(--table-th-text); padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 800; letter-spacing: .3px; }
+    .brief-body thead th:first-child { border-radius: 8px 0 0 0; }
+    .brief-body thead th:last-child  { border-radius: 0 8px 0 0; }
+    .brief-body tbody td { padding: 7px 10px; border-bottom: 1px solid var(--table-border); color: var(--text-secondary); vertical-align: top; }
+    .brief-body tbody tr:last-child td { border-bottom: none; }
+    .brief-body tbody tr:nth-child(even) td { background: var(--table-row-even); }
+
+    .brief-meta {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
     }
   </style>
 </head>
@@ -615,6 +901,91 @@
       </div>
     </div>
 
+    <!-- ⑨ 구글 캘린더 -->
+    <div class="card gcal-card" id="card-gcal">
+      <div class="brief-header">
+        <div class="card-title" style="margin-bottom:0">📅 구글 캘린더 (이번 주)</div>
+        <div class="brief-controls">
+          <button class="brief-refresh-btn" id="gcal-refresh-btn" onclick="loadCalendar()" style="display:none">🔄 새로고침</button>
+          <button class="brief-collapse-btn" id="col-gcal" onclick="toggleCard('gcal')" title="접기">▾</button>
+        </div>
+      </div>
+      <div class="brief-content" id="cnt-gcal">
+        <div id="gcal-body">
+          <div class="gcal-connect-box">
+            <span>⏳ 캘린더 연결 상태 확인 중...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑤ AI 아침 브리핑 -->
+    <div class="card brief-card" id="card-brief">
+      <div class="brief-header">
+        <div class="card-title" style="margin-bottom:0">🤖 AI 아침 브리핑</div>
+        <div class="brief-controls">
+          <select class="brief-hist-sel" id="sel-brief" onchange="selectHistory('brief',this.value)" title="이전 기록 보기"></select>
+          <button class="brief-refresh-btn" onclick="loadBrief()">🔄 다시 브리핑</button>
+          <button class="brief-collapse-btn" id="col-brief" onclick="toggleCard('brief')" title="접기">▾</button>
+        </div>
+      </div>
+      <div class="brief-content" id="cnt-brief">
+        <div class="brief-body" id="brief-body"><span style="color:var(--text-muted)">⏳ 불러오는 중...</span></div>
+        <div class="brief-meta" id="brief-meta"></div>
+      </div>
+    </div>
+
+    <!-- ⑥ 데이터 분석 -->
+    <div class="card brief-card" id="card-analysis">
+      <div class="brief-header">
+        <div class="card-title" style="margin-bottom:0">📊 데이터 분석</div>
+        <div class="brief-controls">
+          <select class="brief-hist-sel" id="sel-analysis" onchange="selectHistory('analysis',this.value)" title="이전 기록 보기"></select>
+          <button class="brief-refresh-btn" onclick="loadAnalysis()">🔄 다시 분석</button>
+          <button class="brief-collapse-btn" id="col-analysis" onclick="toggleCard('analysis')" title="접기">▾</button>
+        </div>
+      </div>
+      <div class="brief-content" id="cnt-analysis">
+        <div class="brief-body" id="analysis-body"><span style="color:var(--text-muted)">⏳ 불러오는 중...</span></div>
+        <div class="brief-meta" id="analysis-meta"></div>
+      </div>
+    </div>
+
+    <!-- ⑦ 회의록 분석 -->
+    <div class="card brief-card" id="card-meeting">
+      <div class="brief-header">
+        <div class="card-title" style="margin-bottom:0">📝 회의록 분석</div>
+        <div class="brief-controls">
+          <select class="brief-hist-sel" id="sel-meeting" onchange="selectHistory('meeting',this.value)" title="이전 기록 보기"></select>
+          <button class="brief-refresh-btn" onclick="loadMeeting()">🔄 다시 분석</button>
+          <button class="brief-collapse-btn" id="col-meeting" onclick="toggleCard('meeting')" title="접기">▾</button>
+        </div>
+      </div>
+      <div class="brief-content" id="cnt-meeting">
+        <div class="brief-body" id="meeting-body"><span style="color:var(--text-muted)">⏳ 불러오는 중...</span></div>
+        <div class="brief-meta" id="meeting-meta"></div>
+      </div>
+    </div>
+
+    <!-- ⑧ AI 데이터 챗 -->
+    <div class="card brief-card" id="card-chat">
+      <div class="brief-header">
+        <div class="card-title" style="margin-bottom:0">💬 AI 데이터 챗</div>
+        <div class="brief-controls">
+          <button class="brief-collapse-btn" id="col-chat" onclick="toggleCard('chat')" title="접기">▾</button>
+        </div>
+      </div>
+      <div class="brief-content" id="cnt-chat">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg ai">안녕하세요! 업무 데이터에 대해 질문해보세요.<br>예: "이번 달 매출이 왜 낮아요?" · "다음 주 바쁜 날 언제예요?"</div>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chat-input" rows="1" placeholder="질문을 입력하세요…"></textarea>
+          <button class="chat-send-btn" id="chat-send-btn" onclick="sendChat()">전송</button>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /grid -->
 
   <script>
@@ -633,8 +1004,266 @@
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
     /* ══════════════════════════════════════════════
+       AI 카드 공통: 마크다운 렌더링 · 접기 · 히스토리
+    ══════════════════════════════════════════════ */
+
+    /* ─ 마크다운 → HTML ─ */
+    function inlineMd(t) {
+      return t
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/__(.+?)__/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/`(.+?)`/g, '<code>$1</code>');
+    }
+    function md2html(raw) {
+      if (!raw) return '';
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const lines = raw.split('\n');
+      const out = [];
+      let i = 0;
+      while (i < lines.length) {
+        const line = lines[i], tr = line.trim();
+        // 테이블
+        if (tr.startsWith('|') && i+1 < lines.length && /^\|[-| :]+\|/.test(lines[i+1].trim())) {
+          const cells = l => l.split('|').slice(1,-1).map(c => esc(c.trim()));
+          const ths = cells(line).map(c=>`<th>${inlineMd(c)}</th>`).join('');
+          i += 2;
+          const rows = [];
+          while (i < lines.length && lines[i].trim().startsWith('|')) {
+            rows.push(`<tr>${cells(lines[i]).map(c=>`<td>${inlineMd(c)}</td>`).join('')}</tr>`);
+            i++;
+          }
+          out.push(`<table><thead><tr>${ths}</tr></thead><tbody>${rows.join('')}</tbody></table>`);
+          continue;
+        }
+        let m;
+        if ((m=tr.match(/^### (.+)/))) { out.push(`<h4>${inlineMd(esc(m[1]))}</h4>`); i++; continue; }
+        if ((m=tr.match(/^## (.+)/)))  { out.push(`<h3>${inlineMd(esc(m[1]))}</h3>`); i++; continue; }
+        if ((m=tr.match(/^# (.+)/)))   { out.push(`<h2>${inlineMd(esc(m[1]))}</h2>`); i++; continue; }
+        if (/^-{3,}$/.test(tr))        { out.push('<hr>'); i++; continue; }
+        if (/^[-*]\s/.test(tr)) {
+          const items=[];
+          while (i<lines.length && /^[-*]\s/.test(lines[i].trim())) {
+            items.push(`<li>${inlineMd(esc(lines[i].trim().replace(/^[-*]\s+/,'')))}</li>`); i++;
+          }
+          out.push(`<ul>${items.join('')}</ul>`); continue;
+        }
+        if (/^\d+\.\s/.test(tr)) {
+          const items=[];
+          while (i<lines.length && /^\d+\.\s/.test(lines[i].trim())) {
+            items.push(`<li>${inlineMd(esc(lines[i].trim().replace(/^\d+\.\s+/,'')))}</li>`); i++;
+          }
+          out.push(`<ol>${items.join('')}</ol>`); continue;
+        }
+        if (tr==='') { out.push('<div class="bsp"></div>'); i++; continue; }
+        out.push(`<p>${inlineMd(esc(tr))}</p>`); i++;
+      }
+      return out.join('');
+    }
+
+    /* ─ 접기/펼치기 ─ */
+    function toggleCard(id) {
+      const cnt = document.getElementById('cnt-'+id);
+      const btn = document.getElementById('col-'+id);
+      const collapsed = cnt.classList.toggle('collapsed');
+      btn.classList.toggle('collapsed', collapsed);
+      btn.title = collapsed ? '펼치기' : '접기';
+      localStorage.setItem('card-'+id+'-collapsed', collapsed);
+    }
+    // 페이지 로드 시 접기 상태 복원
+    ['gcal','brief','analysis','meeting','chat'].forEach(id => {
+      if (localStorage.getItem('card-'+id+'-collapsed') === 'true') {
+        document.getElementById('cnt-'+id)?.classList.add('collapsed');
+        const btn = document.getElementById('col-'+id);
+        if (btn) { btn.classList.add('collapsed'); btn.title='펼치기'; }
+      }
+    });
+
+    /* ─ 기록 셀렉트 ─ */
+    const CARD_RECORDS = { brief:[], meeting:[], analysis:[] };
+
+    function populateSel(type, records) {
+      const sel = document.getElementById('sel-'+type);
+      if (!sel) return;
+      sel.innerHTML = records.map((r,i) => {
+        const d = new Date(r.updated_at);
+        const label = d.toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+        return `<option value="${i}">${i===0?'● 최신 · ':'○ '}${label}</option>`;
+      }).join('');
+    }
+
+    function selectHistory(type, idx) {
+      const rec = CARD_RECORDS[type][parseInt(idx)];
+      if (!rec) return;
+      const IDS = {
+        brief:    {body:'brief-body',    meta:'brief-meta'   },
+        meeting:  {body:'meeting-body',  meta:'meeting-meta' },
+        analysis: {body:'analysis-body', meta:'analysis-meta'},
+      };
+      const {body, meta} = IDS[type];
+      document.getElementById(body).innerHTML = md2html(rec.summary||'');
+      const d = new Date(rec.updated_at);
+      const src = rec.sources?.length ? ` · 분석 대상: ${rec.sources.join(', ')}` : '';
+      document.getElementById(meta).textContent = `업데이트: ${d.toLocaleString('ko-KR')}${src}`;
+    }
+
+    /* ─ JSON 카드 공통 로더 ─ */
+    async function loadJsonCard({file, type, emptyCmd}) {
+      const IDS = {
+        brief:    {body:'brief-body',    meta:'brief-meta'   },
+        meeting:  {body:'meeting-body',  meta:'meeting-meta' },
+        analysis: {body:'analysis-body', meta:'analysis-meta'},
+      };
+      const {body, meta} = IDS[type];
+      document.getElementById(body).innerHTML = '<span style="color:var(--text-muted)">⏳ 불러오는 중...</span>';
+      document.getElementById(meta).textContent = '';
+      try {
+        const res = await fetch(file+'?t='+Date.now());
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const records = data.records
+          || (data.summary ? [{updated_at:data.updated_at, sources:data.sources, summary:data.summary}] : []);
+        if (!records.length) throw new Error();
+        CARD_RECORDS[type] = records;
+        populateSel(type, records);
+        selectHistory(type, 0);
+      } catch {
+        document.getElementById(body).innerHTML =
+          `📭 파일이 없습니다.<br>터미널에서: <code style="background:var(--todo-bg);padding:4px 10px;border-radius:8px;font-size:12px">${emptyCmd}</code>`;
+      }
+    }
+
+    function loadBrief()    { loadJsonCard({file:'brief.json',          type:'brief',    emptyCmd:'npm run brief'});   }
+    function loadAnalysis() { loadJsonCard({file:'analysis.json',       type:'analysis', emptyCmd:'npm run analyze'}); }
+    function loadMeeting()  { loadJsonCard({file:'meeting-result.json', type:'meeting',  emptyCmd:'npm run meeting'}); }
+
+    /* ── 구글 캘린더 ── */
+    async function loadCalendar() {
+      const body = document.getElementById('gcal-body');
+      const refreshBtn = document.getElementById('gcal-refresh-btn');
+      body.innerHTML = '<div class="gcal-connect-box"><span>⏳ 불러오는 중...</span></div>';
+
+      // 로그인 시 저장된 토큰으로 실시간 조회 → 추가 연결 단계 없음.
+      // (서버가 없는 정적 배포 환경에서는 calendar-data.json 으로 폴백)
+      let events = null, updated = '';
+      try {
+        const res = await fetch('/api/calendar');
+        if (res.ok) {
+          const data = await res.json();
+          events = data.events || [];
+          updated = new Date().toLocaleString('ko-KR');
+        }
+      } catch { /* 서버 없음 → 폴백 */ }
+
+      if (events === null) {
+        try {
+          const res = await fetch('calendar-data.json');
+          if (res.ok) {
+            const data = await res.json();
+            events = data.events || [];
+            updated = data.updated_at ? new Date(data.updated_at).toLocaleString('ko-KR') : '';
+          }
+        } catch { /* 데이터 없음 */ }
+      }
+
+      if (events === null) {
+        body.innerHTML = '<div class="gcal-empty">캘린더를 불러올 수 없습니다.</div>';
+        refreshBtn.style.display = 'none';
+        return;
+      }
+
+      refreshBtn.style.display = '';
+
+      if (events.length === 0) {
+        body.innerHTML = `<div class="gcal-empty">이번 주 등록된 일정이 없습니다.<br><small style="color:var(--text-muted)">${updated ? '갱신: ' + updated : ''}</small></div>`;
+        return;
+      }
+
+      const DOT_COLORS = ['#4285f4','#ea4335','#34a853','#fbbc04','#9c27b0','#00bcd4'];
+      body.innerHTML = `
+        <div class="gcal-list">${events.map((e, i) => {
+          const start = new Date(e.start);
+          const timeStr = e.allDay
+            ? `${start.getMonth()+1}/${start.getDate()} (종일)`
+            : `${start.getMonth()+1}/${start.getDate()} ${start.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'})}`;
+          const loc = e.location ? `<div class="gcal-loc">📍 ${e.location}</div>` : '';
+          return `<div class="gcal-item">
+            <div class="gcal-dot" style="background:${DOT_COLORS[i%DOT_COLORS.length]}"></div>
+            <div class="gcal-info">
+              <div class="gcal-title">${e.title}</div>
+              <div class="gcal-time">${timeStr}</div>
+              ${loc}
+            </div>
+          </div>`;
+        }).join('')}</div>
+        ${updated ? `<div style="font-size:11px;color:var(--text-muted);margin-top:10px;text-align:right">갱신: ${updated}</div>` : ''}`;
+    }
+
+    loadCalendar();
+
+    loadBrief();
+    loadAnalysis();
+    loadMeeting();
+
+    /* ── AI 데이터 챗 ── */
+    const chatInput = document.getElementById('chat-input');
+    const chatSend  = document.getElementById('chat-send-btn');
+    const chatMsgs  = document.getElementById('chat-messages');
+
+    chatInput.addEventListener('keydown', e => {
+      if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+    });
+
+    function appendMsg(text, type, isHtml=false) {
+      const el = document.createElement('div');
+      el.className = `chat-msg ${type}`;
+      if (isHtml) el.innerHTML = text; else el.textContent = text;
+      chatMsgs.appendChild(el);
+      chatMsgs.scrollTop = chatMsgs.scrollHeight;
+      return el;
+    }
+
+    async function sendChat() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      chatInput.value = '';
+      chatSend.disabled = true;
+      appendMsg(msg, 'user');
+      const loading = appendMsg('⏳ 답변 생성 중...', 'loading');
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({message:msg, context:buildChatContext()}),
+        });
+        const data = await res.json();
+        loading.remove();
+        if (data.answer) appendMsg(md2html(data.answer), 'ai', true);
+        else appendMsg('❌ '+(data.error||'오류가 발생했습니다.'), 'ai');
+      } catch {
+        loading.remove();
+        appendMsg('❌ 서버에 연결할 수 없습니다. <code>npm run dev</code> 로 서버를 실행해주세요.', 'ai', true);
+      } finally {
+        chatSend.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    /* ══════════════════════════════════════════════
        Supabase 데이터 fetch & 렌더링
     ══════════════════════════════════════════════ */
+    // 로드된 Supabase 데이터 (챗 컨텍스트용)
+    let loadedData = { tasks: [], schedule: [], projects: [], sales: [] };
+
+    function buildChatContext() {
+      let ctx = '';
+      if (loadedData.tasks.length)    ctx += '\n\n=== 업무목록 ===\n'     + JSON.stringify(loadedData.tasks, null, 1);
+      if (loadedData.schedule.length) ctx += '\n\n=== 주간일정 ===\n'     + JSON.stringify(loadedData.schedule, null, 1);
+      if (loadedData.projects.length) ctx += '\n\n=== 프로젝트현황 ===\n' + JSON.stringify(loadedData.projects, null, 1);
+      if (loadedData.sales.length)    ctx += '\n\n=== 매출데이터 ===\n'   + JSON.stringify(loadedData.sales, null, 1);
+      return ctx;
+    }
+
     const PRIORITY_CLASS = { '높음': 'high', '보통': 'medium', '낮음': 'low' };
     const PROJECT_COLORS = [
       'linear-gradient(90deg,#00b894,#55efc4)',
@@ -770,10 +1399,10 @@
           sb.from('projects').select('*').order('progress', { ascending: false }),
           sb.from('sales').select('*').order('sale_date'),
         ]);
-        if (tRes.data)  renderTasks(tRes.data);
-        if (sRes.data)  renderSchedule(sRes.data);
-        if (pRes.data)  renderProjects(pRes.data);
-        if (saRes.data) renderSales(saRes.data);
+        if (tRes.data)  { loadedData.tasks    = tRes.data;  renderTasks(tRes.data); }
+        if (sRes.data)  { loadedData.schedule = sRes.data;  renderSchedule(sRes.data); }
+        if (pRes.data)  { loadedData.projects = pRes.data;  renderProjects(pRes.data); }
+        if (saRes.data) { loadedData.sales    = saRes.data; renderSales(saRes.data); }
       } catch(e) {
         console.error('Supabase fetch 오류:', e);
       }
