@@ -6,7 +6,15 @@ AI 기반 업무 관리 대시보드. 할 일·일정·프로젝트·매출 데�
 
 ## 🔖 세션 인계 (Claude가 먼저 읽을 것)
 
-> 다른 기기(맥미니 등)에서 이어받은 Claude를 위한 현재 상태 요약. 사용자가 "이어서 해줘"라고 하면 아래를 읽고 바로 진행.
+> 다른 기기(맥미니 등)에서 이어받은 Claude를 위한 지침.
+> **⚠️ 사용자는 터미널 명령어를 직접 치지 않는다. 모든 명령(`npm install`, 서버 실행 등)은 Claude가 Bash 도구로 직접 실행한다.**
+
+**사용자가 "이어서 해줘" / "시작해줘" 라고 하면 Claude가 자동으로:**
+1. `.env.local` 과 `.google-tokens.json` 이 폴더에 있는지 확인 (압축에 포함돼 있음. 없으면 사용자에게 압축 해제 위치를 물어볼 것).
+2. `npm install` 실행 (node_modules 없을 때).
+3. `npm run dev` 로 로컬 서버 실행 (백그라운드) → http://localhost:3000.
+4. 사용자에게 "브라우저에서 http://localhost:3000 열고 jujumath21@gmail.com 으로 로그인하세요" 안내. (구글 로그인의 비밀번호·동의 클릭만 사용자가 직접 — 그 외 전부 Claude가 처리)
+5. 그 뒤 사용자가 원하는 작업을 이어서 진행.
 
 **완료된 것:**
 - Google 로그인 게이트 (로컬 `server.mjs` 세션파일 / 배포 `middleware.js` Edge + 서명쿠키). 미로그인 시 전 HTML 페이지 차단 → 소개페이지(`/`)만 공개.
@@ -14,20 +22,11 @@ AI 기반 업무 관리 대시보드. 할 일·일정·프로젝트·매출 데�
 - AI 아침 브리핑 / 데이터 분석+챗 / 회의록 분석 (Gemini, `scripts/*.mjs` → `*.json`).
 - 배포: https://eunjuju.vercel.app (Vercel, GitHub `eunju5561-droid/eunjuju` main). `vercel --prod` 또는 main push로 재배포.
 
-**이 기기에서 처음 켤 때 (한 번만):**
-```bash
-npm install
-# 비밀값(.env.local 등)은 압축파일로 받아 프로젝트 폴더에 풀어둔 상태여야 함.
-# 없다면: vercel login && vercel link && vercel env pull .env.local
-npm run dev    # http://localhost:3000 → Google 로그인
-```
-자세한 절차: `맥미니-설정가이드.md`
+**git에 없지만 압축에 포함된 파일(이게 있어야 작동):** `.env.local`, `.google-tokens.json`, `brief.json`, `analysis.json`, `meeting-result.json`, `calendar-data.json`.
 
-**git에 없는 파일(직접 옮긴 압축파일에 들어있음):** `.env.local`, `.google-tokens.json`, `brief.json`, `analysis.json`, `meeting-result.json`, `calendar-data.json`. 이게 폴더에 있어야 정상 작동.
+**데이터 갱신(Claude가 실행):** `npm run brief|analyze|meeting`, `npm run fetch:calendar` → 각 JSON 갱신 → 배포 반영은 `vercel --prod`.
 
-**데이터 갱신:** `npm run brief|analyze|meeting`, `npm run fetch:calendar` → 각 JSON 갱신 → 배포 반영은 `vercel --prod`.
-
-**주의:** 비밀값은 코드에 하드코딩 금지(전부 `process.env`). 생성 JSON·`.env.local`은 gitignore됨(개인정보).
+**주의:** 비밀값은 코드에 하드코딩 금지(전부 `process.env`). 생성 JSON·`.env.local`은 gitignore됨(개인정보). 자세한 절차는 `맥미니-설정가이드.md`.
 
 ---
 
