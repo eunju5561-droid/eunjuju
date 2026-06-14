@@ -4,6 +4,33 @@ AI 기반 업무 관리 대시보드. 할 일·일정·프로젝트·매출 데�
 
 ---
 
+## 🔖 세션 인계 (Claude가 먼저 읽을 것)
+
+> 다른 기기(맥미니 등)에서 이어받은 Claude를 위한 현재 상태 요약. 사용자가 "이어서 해줘"라고 하면 아래를 읽고 바로 진행.
+
+**완료된 것:**
+- Google 로그인 게이트 (로컬 `server.mjs` 세션파일 / 배포 `middleware.js` Edge + 서명쿠키). 미로그인 시 전 HTML 페이지 차단 → 소개페이지(`/`)만 공개.
+- 구글 캘린더 연동 (OAuth + refresh_token → `api/calendar.js` / 로컬 `/api/calendar`). 계정은 **jujumath21@gmail.com**.
+- AI 아침 브리핑 / 데이터 분석+챗 / 회의록 분석 (Gemini, `scripts/*.mjs` → `*.json`).
+- 배포: https://eunjuju.vercel.app (Vercel, GitHub `eunju5561-droid/eunjuju` main). `vercel --prod` 또는 main push로 재배포.
+
+**이 기기에서 처음 켤 때 (한 번만):**
+```bash
+npm install
+# 비밀값(.env.local 등)은 압축파일로 받아 프로젝트 폴더에 풀어둔 상태여야 함.
+# 없다면: vercel login && vercel link && vercel env pull .env.local
+npm run dev    # http://localhost:3000 → Google 로그인
+```
+자세한 절차: `맥미니-설정가이드.md`
+
+**git에 없는 파일(직접 옮긴 압축파일에 들어있음):** `.env.local`, `.google-tokens.json`, `brief.json`, `analysis.json`, `meeting-result.json`, `calendar-data.json`. 이게 폴더에 있어야 정상 작동.
+
+**데이터 갱신:** `npm run brief|analyze|meeting`, `npm run fetch:calendar` → 각 JSON 갱신 → 배포 반영은 `vercel --prod`.
+
+**주의:** 비밀값은 코드에 하드코딩 금지(전부 `process.env`). 생성 JSON·`.env.local`은 gitignore됨(개인정보).
+
+---
+
 ## 주요 기능
 
 | 기능 | 설명 |
